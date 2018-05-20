@@ -30,9 +30,13 @@ clean:
 	cp bin/bitmap2.o lib/
 	rm -rf bin/*
 
-com_test:
-	gcc -g testes/teste.c -I include -L lib -lt2f2 -o testes/teste
-	./testes/teste
+test_main:
+	gcc -g exemplo/main.c -I include -L lib -lt2fs -o src/test_main -Wall
+	./src/test_main
 
-test: compile library com_test clean
+# com_test:
+# 	gcc -g testes/teste.c -I include -L lib -lt2f2 -o testes/teste
+# 	./testes/teste
+
+test: compile library test_main
 

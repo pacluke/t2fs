@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../include/t2fs.h"
+#include "../include/apidisk.h"
+#include "../include/bitmap2.h"
 
 /* ------------------------ */
 #define ERROR -10 //error code
@@ -38,7 +40,7 @@ int identify2 (char *name, int size){
     i++;
   }
   return SUCCESS;
-  
+
 }
 
 
@@ -57,6 +59,8 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna o handle d
 -----------------------------------------------------------------------------*/
 FILE2 create2 (char *filename){
 
+
+	return ERROR;
 }
 
 
@@ -71,6 +75,8 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int delete2 (char *filename){
 
+
+	return ERROR;
 }
 
 
@@ -90,6 +96,8 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna o handle d
 -----------------------------------------------------------------------------*/
 FILE2 open2 (char *filename){
 
+
+	return ERROR;
 }
 
 
@@ -103,6 +111,8 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int close2 (FILE2 handle){
 
+
+	return ERROR;
 }
 
 
@@ -121,6 +131,8 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna o número 
 -----------------------------------------------------------------------------*/
 int read2 (FILE2 handle, char *buffer, int size){
 
+
+	return ERROR;
 }
 
 
@@ -138,6 +150,8 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna o número 
 -----------------------------------------------------------------------------*/
 int write2 (FILE2 handle, char *buffer, int size){
 
+
+	return ERROR;
 }
 
 
@@ -154,6 +168,8 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int truncate2 (FILE2 handle){
 
+
+	return ERROR;
 }
 
 
@@ -172,6 +188,8 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int seek2 (FILE2 handle, DWORD offset){
 
+
+	return ERROR;
 }
 
 
@@ -189,6 +207,8 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int mkdir2 (char *pathname){
 
+
+	return ERROR;
 }
 
 
@@ -209,6 +229,8 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int rmdir2 (char *pathname){
 
+
+	return ERROR;
 }
 
 
@@ -226,6 +248,8 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int chdir2 (char *pathname){
 
+
+	return ERROR;
 }
 
 
@@ -245,6 +269,8 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int getcwd2 (char *pathname, int size){
 
+
+	return ERROR;
 }
 
 
@@ -263,6 +289,8 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna o identifi
 -----------------------------------------------------------------------------*/
 DIR2 opendir2 (char *pathname){
 
+
+	return ERROR;
 }
 
 
@@ -283,6 +311,8 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int readdir2 (DIR2 handle, DIRENT2 *dentry){
 
+
+	return ERROR;
 }
 
 
@@ -296,6 +326,8 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int closedir2 (DIR2 handle){
 
+
+	return ERROR;
 }
 
 
