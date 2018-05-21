@@ -14,9 +14,9 @@
 typedef int FILE2;
 typedef int DIR2;
 
-typedef unsigned char BYTE;
-typedef unsigned short int WORD;
-typedef unsigned int DWORD;
+typedef unsigned char BYTE;			// 1
+typedef unsigned short int WORD;	// 2
+typedef unsigned int DWORD;			// 4
 
 #pragma pack(push, 1)
 
@@ -302,5 +302,9 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero).
 -----------------------------------------------------------------------------*/
 int closedir2 (DIR2 handle);
 
+/*
+	COLOCA A INFO SOBRE O SUPERBLOCO NA ESTRUTURA
+*/
+int main_test_ok();
 
 #endif

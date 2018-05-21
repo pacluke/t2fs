@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+#include <limits.h>
 #include "../include/t2fs.h"
 #include "../include/apidisk.h"
 #include "../include/bitmap2.h"
+#include "../include/aux2.h"
 
 /* ------------------------ */
 #define ERROR -10 //error code
@@ -12,9 +15,44 @@
 #define TRUE 1
 #define FALSE 0
 /* ------------------------ */
-#define NAMES "Lucas Flores - 00242317\nMatheus Westhelle - 00206688\nRodrigo Madruga - 00180669\n"
+#define NAMES "Lucas Flores 00242317\nMatheus Westhelle 00206688\nRodrigo Madruga 00180669\n"
 #define N_SIZE 85
 /* ------------------------ */
+
+/* ************************ */
+
+/* ------------------------ */
+#define LIB_ID_OFFSET 0
+#define LIB_ID 4
+/* ------------------------ */
+#define LIB_VERSION_OFFSET 4
+#define LIB_VERSION 2
+/* ------------------------ */
+#define SUPER_BLOCK_SIZE_OFFSET 6
+#define SUPER_BLOCK_SIZE 2
+/* ------------------------ */
+#define FREE_BLOCKS_BITMAP_SIZE_OFFSET 8
+#define FREE_BLOCKS_BITMAP_SIZE 2
+/* ------------------------ */
+#define FREE_INODE_BITMAP_SIZE_OFFSET 10
+#define FREE_INODE_BITMAP_SIZE 2
+/* ------------------------ */
+#define INODE_AREA_SIZE_OFFSET 12
+#define INODE_AREA_SIZE 2
+/* ------------------------ */
+#define BLOCK_SIZE_OFFSET 14
+#define BLOCK_SIZE 2
+/* ------------------------ */
+#define DISK_SIZE_OFFSET 16
+#define DISK_SIZE 4
+/* ------------------------ */
+
+
+/* ESTRUTURA DO SUPERBLOCO */
+struct t2fs_superbloco SUPERBLOCK;
+char * CURRENT_BLOCK;
+/* ------------------------ */
+
 
 /*-----------------------------------------------------------------------------
 Função: Usada para identificar os desenvolvedores do T2FS.

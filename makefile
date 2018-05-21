@@ -17,22 +17,22 @@ SRC_DIR=./src
 all: compile library
 
 compile:
-	gcc  -g -c src/t2fs.c -I include -o bin/t2fs.o -Wall
+	@gcc  -g -c src/t2fs.c -I include -o bin/t2fs.o -Wall
 
 library:
-	ar crs lib/libt2fs.a bin/t2fs.o lib/apidisk.o lib/bitmap2.o
+	@ar crs lib/libt2fs.a bin/t2fs.o lib/apidisk.o lib/bitmap2.o
 
 clean:
-	cp lib/apidisk.o bin/
-	cp lib/bitmap2.o bin/
-	rm -rf lib/*
-	cp bin/apidisk.o lib/
-	cp bin/bitmap2.o lib/
-	rm -rf bin/*
+	@cp lib/apidisk.o bin/
+	@cp lib/bitmap2.o bin/
+	@rm -rf lib/*
+	@cp bin/apidisk.o lib/
+	@cp bin/bitmap2.o lib/
+	@rm -rf bin/*
 
 test_main:
-	gcc -g exemplo/main.c -I include -L lib -lt2fs -o src/test_main -Wall
-	./src/test_main
+	@gcc -g exemplo/main.c -I include -L lib -lt2fs -o src/test_main -Wall
+	@./src/test_main
 
 # com_test:
 # 	gcc -g testes/teste.c -I include -L lib -lt2f2 -o testes/teste
