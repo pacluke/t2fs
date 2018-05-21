@@ -94,7 +94,7 @@ int load_superblock(){
 		// set block size
 		memcpy(&(SUPERBLOCK->blockSize),
 			&buffer[BLOCK_SIZE_OFFSET], BLOCK_SIZE);
-		// set
+		// set disk size
 		memcpy(&(SUPERBLOCK->diskSize),
 			&buffer[DISK_SIZE_OFFSET], DISK_SIZE);
 		return SUCCESS;
@@ -129,22 +129,55 @@ void print_superblock(){
 		SUPERBLOCK->diskSize, SUPERBLOCK->diskSize);
 }
 
+int load_block(int block){
+	unsigned char buffer[SECTOR_SIZE];
+	int sectors = (block * 4);
+
+	if(read_sector(sectors, buffer) == 0)
+		memcpy(&CURRENT_BLOCK[0], &buffer[0], SECTOR_SIZE);
+	else 
+		return ERROR;
+
+	if(read_sector (sectors+1, buffer) == 0)
+		memcpy(&CURRENT_BLOCK[SECTOR_SIZE*1], &buffer[0],SECTOR_SIZE);
+	else 
+		return ERROR;
+
+	if(read_sector (sectors+2, buffer) == 0)
+		memcpy(&CURRENT_BLOCK[SECTOR_SIZE*2], &buffer[0],SECTOR_SIZE);
+	else 
+		return ERROR;
+
+	if(read_sector (sectors+3, buffer) == 0)
+		memcpy(&CURRENT_BLOCK[SECTOR_SIZE*3], &buffer[0],SECTOR_SIZE);
+	else 
+		return ERROR;
+
+	return SUCCESS;
+}
+
 void debug_main(){
-	if ((init_superblock() == 0))
+	if ((init_superblock() == SUCCESS))
 	{
 		printf("init_superblock OK\n\n");
 	}
 
-	if ((init_current_block() == 0))
+	if ((init_current_block() == SUCCESS))
 	{
 		printf("init_current_block OK\n\n");
 	}
 
-	if ((load_superblock() == 0))
+	if ((load_superblock() == SUCCESS))
 	{
 		printf("load_superblock OK\n\n");
 	}
 	print_superblock();
+
+	if ((load_block(3) == SUCCESS))
+	{
+		printf("load_block OK\n\n");
+	}
+
 }
 
 
@@ -432,7 +465,8 @@ DIR2 opendir2 (char *pathname){
 Função:	Realiza a leitura das entradas do diretório identificado por "handle".
 	A cada chamada da função é lida a entrada seguinte do diretório representado pelo identificador "handle".
 	Algumas das informações dessas entradas devem ser colocadas no parâmetro "dentry".
-	Após realizada a leitura de uma entrada, o ponteiro de entradas (current entry) deve ser ajustado para a próxima entrada válida, seguinte à última lida.
+	Após realizada a leitura de uma entrada, o ponteiro de entradas (current entry) 
+	deve ser ajustado para a próxima entrada válida, seguinte à última lida.
 	São considerados erros:
 		(a) qualquer situação que impeça a realização da operação
 		(b) término das entradas válidas do diretório identificado por "handle".
