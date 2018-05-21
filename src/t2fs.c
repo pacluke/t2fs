@@ -213,37 +213,60 @@ int get_i_node(int i_node_n, struct t2fs_inode *i_node){
 	return ERROR;
 }
 
+void print_i_node(struct t2fs_inode *i_node){
+	printf("BLOCKS FILE SIZE\t %d\n",i_node->blocksFileSize);
+	printf("BYTES FILE SIZE:\t %d\n",i_node->bytesFileSize);
+	printf("1ST DATA POINTER:\t %u\n",i_node->dataPtr[0]);
+	printf("2ND DATA POINTER:\t %u\n",i_node->dataPtr[1]);
+	printf("SINGLE INDIRECT POINTER: %u\n",i_node->singleIndPtr);
+	printf("DOUBLE INDIRECT POINTER: %u\n",i_node->doubleIndPtr);
+}
+
+
+
 void debug_main(){
-	if ((init_superblock() == SUCCESS))
+	if ((init_superblock() != SUCCESS))
 	{
-		printf("init_superblock OK\n\n");
+		printf("ERROR: init_superblock\n\n");
 	}
 
-	if ((init_current_block() == SUCCESS))
+	if ((init_current_block() != SUCCESS))
 	{
-		printf("init_current_block OK\n\n");
+		printf("ERROR: init_current_block\n\n");
 	}
 
-	if ((load_superblock() == SUCCESS))
+	if ((load_superblock() != SUCCESS))
 	{
-		printf("load_superblock OK\n\n");
+		printf("ERROR: load_superblock\n\n");
 	}
 	print_superblock();
 
 	printf("\n");
 
-	if ((load_block(5) == SUCCESS))
+	if ((load_block(67) != SUCCESS))
 	{
-		printf("load_block OK\n\n");
+		printf("ERROR: load_block\n\n");
 	}
 
 	struct t2fs_inode *i_node = (struct t2fs_inode *)malloc(sizeof(struct t2fs_inode));
-
-	if ((get_i_node(0, i_node) == SUCCESS))
+	if ((get_i_node(0, i_node) != SUCCESS))
 	{
-		printf("get_i_node OK\n\n");
+		printf("ERROR: get_i_node\n\n");
 	}
-
+	print_i_node(i_node);
+	printf("\n");
+	if ((get_i_node(2, i_node) != SUCCESS))
+	{
+		printf("ERROR: get_i_node\n\n");
+	}
+	print_i_node(i_node);
+	printf("\n");
+	if ((get_i_node(4, i_node) != SUCCESS))
+	{
+		printf("ERROR: get_i_node\n\n");
+	}
+	print_i_node(i_node);
+	printf("\n");
 }
 
 /*-----------------------------------------------------------------------------
