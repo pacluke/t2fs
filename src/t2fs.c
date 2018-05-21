@@ -50,16 +50,29 @@
 
 /* ESTRUTURA DO SUPERBLOCO */
 struct t2fs_superbloco *SUPERBLOCK;
-char * CURRENT_BLOCK;
+char *CURRENT_BLOCK;
 /* ------------------------ */
 
-
 int init_superblock(){
-	SUPERBLOCK = (struct t2fs_superbloco *) malloc (sizeof(struct t2fs_superbloco));
-	
+	SUPERBLOCK = (struct t2fs_superbloco *) malloc (sizeof(struct t2fs_superbloco));	
 	if(SUPERBLOCK)
 		return SUCCESS;
 	return ERROR;
+}
+
+int init_current_block(){
+	CURRENT_BLOCK = (char *) malloc (sizeof(char)*1024);
+	if(CURRENT_BLOCK)
+		return SUCCESS;
+	return ERROR;
+}
+
+
+void debug_main(){
+	if ((init_superblock() == 0) && (init_current_block() == 0))
+	{
+		printf("INIT SUPERBLOCK + INIT CURRENT_BLOCK OK\n");
+	}
 }
 
 

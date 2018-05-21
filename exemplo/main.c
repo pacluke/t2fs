@@ -15,7 +15,8 @@ void help() {
 }
 
 int main(int argc, char *argv[])
-{
+{	
+	debug_main();
 	// char	command[128];
 	// char	*cmd;
 	
