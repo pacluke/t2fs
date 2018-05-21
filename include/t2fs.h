@@ -302,9 +302,4 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero).
 -----------------------------------------------------------------------------*/
 int closedir2 (DIR2 handle);
 
-/*
-	COLOCA A INFO SOBRE O SUPERBLOCO NA ESTRUTURA
-*/
-int main_test_ok();
-
 #endif

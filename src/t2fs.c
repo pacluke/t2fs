@@ -54,6 +54,15 @@ char * CURRENT_BLOCK;
 /* ------------------------ */
 
 
+int init_superblock(){
+	SUPERBLOCK = (struct t2fs_superbloco *) malloc (sizeof(struct t2fs_superbloco));
+	
+	if(SUPERBLOCK)
+		return SUCCESS;
+	return ERROR;
+}
+
+
 /*-----------------------------------------------------------------------------
 Função: Usada para identificar os desenvolvedores do T2FS.
 	Essa função copia um string de identificação para o ponteiro indicado por "name".
