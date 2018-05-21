@@ -47,9 +47,11 @@
 #define DISK_SIZE 4
 /* ------------------------ */
 
-
 /* ESTRUTURA DO SUPERBLOCO */
 struct t2fs_superbloco *SUPERBLOCK;
+/* ------------------------ */
+
+/* ESTRUTURA DO BLOCO ATUAL */
 char *CURRENT_BLOCK;
 /* ------------------------ */
 
@@ -67,11 +69,53 @@ int init_current_block(){
 	return ERROR;
 }
 
+int load_superblock(){
+	unsigned char buffer[SECTOR_SIZE];
+
+	if (read_sector(0, buffer) == 0){
+		// set id
+		memcpy((void *)&(SUPERBLOCK->id), 
+			(void*)&buffer[LIB_ID_OFFSET], LIB_ID);
+		// set version
+		memcpy((void *)&(SUPERBLOCK->version),
+			(void*)&buffer[LIB_VERSION_OFFSET], LIB_VERSION);
+		// set superblock size
+		memcpy((void *)&(SUPERBLOCK->superblockSize),
+			(void*)&buffer[SUPER_BLOCK_SIZE_OFFSET], SUPER_BLOCK_SIZE);
+		// set free blocks bitmap size
+		memcpy((void *)&(SUPERBLOCK->freeBlocksBitmapSize),
+			(void*)&buffer[FREE_BLOCKS_BITMAP_SIZE_OFFSET], FREE_BLOCKS_BITMAP_SIZE);
+		// set free i-node bitmap size
+		memcpy((void *)&(SUPERBLOCK->freeInodeBitmapSize),
+			(void*)&buffer[FREE_INODE_BITMAP_SIZE_OFFSET], FREE_INODE_BITMAP_SIZE);
+		// set i-node area size
+		memcpy((void *)&(SUPERBLOCK->inodeAreaSize),
+			(void*)&buffer[INODE_AREA_SIZE_OFFSET], INODE_AREA_SIZE);
+		// set block size
+		memcpy((void *)&(SUPERBLOCK->blockSize),
+			(void*)&buffer[BLOCK_SIZE_OFFSET], BLOCK_SIZE);
+		// set
+		memcpy((void *)&(SUPERBLOCK->diskSize),
+			(void*)&buffer[DISK_SIZE_OFFSET], DISK_SIZE);
+		return SUCCESS;
+	}
+	return ERROR;
+}
 
 void debug_main(){
-	if ((init_superblock() == 0) && (init_current_block() == 0))
+	if ((init_superblock() == 0))
 	{
-		printf("INIT SUPERBLOCK + INIT CURRENT_BLOCK OK\n");
+		printf("init_superblock OK\n");
+	}
+
+	if ((init_current_block() == 0))
+	{
+		printf("init_current_block OK\n");
+	}
+
+	if ((load_superblock() == 0))
+	{
+		printf("load_superblock OK\n");
 	}
 }
 
