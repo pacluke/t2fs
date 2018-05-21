@@ -21,6 +21,7 @@
 
 /* ************************ */
 
+/* DEFINES DO SUPERBLOCO */
 /* ------------------------ */
 #define LIB_ID_OFFSET 0
 #define LIB_ID 4
@@ -47,6 +48,30 @@
 #define DISK_SIZE 4
 /* ------------------------ */
 
+
+/* ************************ */
+
+/* DEFINES DO I-NODE */
+/* ------------------------ */
+#define BLOCKS_FILE_SIZE_OFFSET 0
+#define BLOCKS_FILE_SIZE 4
+/* ------------------------ */
+#define BYTES_FILE_SIZE_OFFSET 4
+#define BYTES_FILE_SIZE 4
+/* ------------------------ */
+#define DATA_POINTER_OFFSET 8
+#define DATA_POINTER 8
+/* ------------------------ */
+#define SINGLE_IND_POINTER_OFFSET 16
+#define SINGLE_IND_POINTER 4
+/* ------------------------ */
+#define DOUBLE_IND_POINTER_OFFSET 20
+#define DOUBLE_IND_POINTER 4
+/* ------------------------ */
+#define RESERVED_OFFSET 24
+#define RESERVED 8
+
+
 /* ESTRUTURA DO SUPERBLOCO */
 struct t2fs_superbloco *SUPERBLOCK;
 /* ------------------------ */
@@ -56,14 +81,14 @@ char *CURRENT_BLOCK;
 /* ------------------------ */
 
 int init_superblock(){
-	SUPERBLOCK = (struct t2fs_superbloco *) malloc (sizeof(struct t2fs_superbloco));	
+	SUPERBLOCK = (struct t2fs_superbloco *)malloc(sizeof(struct t2fs_superbloco));	
 	if(SUPERBLOCK)
 		return SUCCESS;
 	return ERROR;
 }
 
 int init_current_block(){
-	CURRENT_BLOCK = (char *) malloc (sizeof(char)*1024);
+	CURRENT_BLOCK = (char*)malloc(sizeof(char)*1024);
 	if(CURRENT_BLOCK)
 		return SUCCESS;
 	return ERROR;
@@ -156,6 +181,38 @@ int load_block(int block){
 	return SUCCESS;
 }
 
+int get_i_node(int i_node_n, struct t2fs_inode *i_node){
+	int position;
+	position = i_node_n*32;
+
+	if(i_node){
+		memcpy(&(i_node->blocksFileSize),
+			&CURRENT_BLOCK[position+BLOCKS_FILE_SIZE_OFFSET], BLOCKS_FILE_SIZE);
+
+		memcpy(&(i_node->bytesFileSize),
+			&CURRENT_BLOCK[position+BYTES_FILE_SIZE_OFFSET], 	BYTES_FILE_SIZE);
+
+		memcpy(&(i_node->dataPtr[0]),
+			&CURRENT_BLOCK[position+(DATA_POINTER_OFFSET/2)], (DATA_POINTER/2));
+
+		memcpy(&(i_node->dataPtr[1]),
+			&CURRENT_BLOCK[position+(DATA_POINTER_OFFSET/2)], (DATA_POINTER/2));
+
+		memcpy(&(i_node->singleIndPtr),
+			&CURRENT_BLOCK[position+SINGLE_IND_POINTER_OFFSET], SINGLE_IND_POINTER);
+
+		memcpy(&(i_node->doubleIndPtr),
+			&CURRENT_BLOCK[position+DOUBLE_IND_POINTER_OFFSET], DOUBLE_IND_POINTER);
+
+		memcpy(&(i_node->reservado),
+			&CURRENT_BLOCK[position+RESERVED_OFFSET], RESERVED);
+
+		return SUCCESS;
+	}
+
+	return ERROR;
+}
+
 void debug_main(){
 	if ((init_superblock() == SUCCESS))
 	{
@@ -180,10 +237,14 @@ void debug_main(){
 		printf("load_block OK\n\n");
 	}
 
+	struct t2fs_inode *i_node = (struct t2fs_inode *)malloc(sizeof(struct t2fs_inode));
+
+	if ((get_i_node(0, i_node) == SUCCESS))
+	{
+		printf("get_i_node OK\n\n");
+	}
+
 }
-
-
-
 
 /*-----------------------------------------------------------------------------
 Função: Usada para identificar os desenvolvedores do T2FS.
