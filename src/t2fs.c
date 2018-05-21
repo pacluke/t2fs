@@ -48,7 +48,6 @@
 #define DISK_SIZE 4
 /* ------------------------ */
 
-
 /* ************************ */
 
 /* DEFINES DO I-NODE */
@@ -70,6 +69,24 @@
 /* ------------------------ */
 #define RESERVED_OFFSET 24
 #define RESERVED 8
+/* ------------------------ */
+
+/* ************************ */
+
+/* DEFINES DO DIRETÓRIO/ARQUIVO */
+/* ------------------------ */
+#define TYPE_VALUE_OFFSET 0
+#define TYPE_VALUE 1
+/* ------------------------ */
+#define DIR_NAME_OFFSET 1
+#define DIR_NAME 59
+/* ------------------------ */
+#define I_NODE_NUMBER_OFFSET 60
+#define I_NODE_NUMBER 4
+/* ------------------------ */
+
+/* ************************ */
+
 
 
 /* ESTRUTURA DO SUPERBLOCO */
@@ -150,8 +167,8 @@ void print_superblock(){
 	printf("BLOCK SIZE:\t\t (hex) %X \t (dec) %u\n",
 		SUPERBLOCK->blockSize, SUPERBLOCK->blockSize);
 
-	printf("DISK SIZE:\t\t (hex) %X \t (dec) %u\n",
-		SUPERBLOCK->diskSize, SUPERBLOCK->diskSize);
+	printf("DISK SIZE:\t\t (hex) %X \t (dec) %u BLOCKS or %u SECTORS\n",
+		SUPERBLOCK->diskSize, SUPERBLOCK->diskSize, SUPERBLOCK->diskSize*4);
 }
 
 int load_block(int block){
@@ -262,6 +279,18 @@ void debug_main(){
 	print_i_node(i_node);
 	printf("\n");
 	if ((get_i_node(4, i_node) != SUCCESS))
+	{
+		printf("ERROR: get_i_node\n\n");
+	}
+	print_i_node(i_node);
+	printf("\n");
+	if ((get_i_node(6, i_node) != SUCCESS))
+	{
+		printf("ERROR: get_i_node\n\n");
+	}
+	print_i_node(i_node);
+	printf("\n");
+	if ((get_i_node(8, i_node) != SUCCESS))
 	{
 		printf("ERROR: get_i_node\n\n");
 	}
