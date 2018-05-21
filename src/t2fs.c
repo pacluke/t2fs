@@ -74,29 +74,29 @@ int load_superblock(){
 
 	if (read_sector(0, buffer) == 0){
 		// set id
-		memcpy((void *)&(SUPERBLOCK->id), 
-			(void*)&buffer[LIB_ID_OFFSET], LIB_ID);
+		memcpy(&(SUPERBLOCK->id), 
+			&buffer[LIB_ID_OFFSET], LIB_ID);
 		// set version
-		memcpy((void *)&(SUPERBLOCK->version),
-			(void*)&buffer[LIB_VERSION_OFFSET], LIB_VERSION);
+		memcpy(&(SUPERBLOCK->version),
+			&buffer[LIB_VERSION_OFFSET], LIB_VERSION);
 		// set superblock size
-		memcpy((void *)&(SUPERBLOCK->superblockSize),
-			(void*)&buffer[SUPER_BLOCK_SIZE_OFFSET], SUPER_BLOCK_SIZE);
+		memcpy(&(SUPERBLOCK->superblockSize),
+			&buffer[SUPER_BLOCK_SIZE_OFFSET], SUPER_BLOCK_SIZE);
 		// set free blocks bitmap size
-		memcpy((void *)&(SUPERBLOCK->freeBlocksBitmapSize),
-			(void*)&buffer[FREE_BLOCKS_BITMAP_SIZE_OFFSET], FREE_BLOCKS_BITMAP_SIZE);
+		memcpy(&(SUPERBLOCK->freeBlocksBitmapSize),
+			&buffer[FREE_BLOCKS_BITMAP_SIZE_OFFSET], FREE_BLOCKS_BITMAP_SIZE);
 		// set free i-node bitmap size
-		memcpy((void *)&(SUPERBLOCK->freeInodeBitmapSize),
-			(void*)&buffer[FREE_INODE_BITMAP_SIZE_OFFSET], FREE_INODE_BITMAP_SIZE);
+		memcpy(&(SUPERBLOCK->freeInodeBitmapSize),
+			&buffer[FREE_INODE_BITMAP_SIZE_OFFSET], FREE_INODE_BITMAP_SIZE);
 		// set i-node area size
-		memcpy((void *)&(SUPERBLOCK->inodeAreaSize),
-			(void*)&buffer[INODE_AREA_SIZE_OFFSET], INODE_AREA_SIZE);
+		memcpy(&(SUPERBLOCK->inodeAreaSize),
+			&buffer[INODE_AREA_SIZE_OFFSET], INODE_AREA_SIZE);
 		// set block size
-		memcpy((void *)&(SUPERBLOCK->blockSize),
-			(void*)&buffer[BLOCK_SIZE_OFFSET], BLOCK_SIZE);
+		memcpy(&(SUPERBLOCK->blockSize),
+			&buffer[BLOCK_SIZE_OFFSET], BLOCK_SIZE);
 		// set
-		memcpy((void *)&(SUPERBLOCK->diskSize),
-			(void*)&buffer[DISK_SIZE_OFFSET], DISK_SIZE);
+		memcpy(&(SUPERBLOCK->diskSize),
+			&buffer[DISK_SIZE_OFFSET], DISK_SIZE);
 		return SUCCESS;
 	}
 	return ERROR;
@@ -124,7 +124,7 @@ void print_superblock(){
 
 	printf("BLOCK SIZE:\t\t (hex) %X \t (dec) %u\n",
 		SUPERBLOCK->blockSize, SUPERBLOCK->blockSize);
-	
+
 	printf("DISK SIZE:\t\t (hex) %X \t (dec) %u\n",
 		SUPERBLOCK->diskSize, SUPERBLOCK->diskSize);
 }
@@ -144,9 +144,10 @@ void debug_main(){
 	{
 		printf("load_superblock OK\n\n");
 	}
-
 	print_superblock();
 }
+
+
 
 
 /*-----------------------------------------------------------------------------
