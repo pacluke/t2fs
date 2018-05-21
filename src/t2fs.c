@@ -173,7 +173,9 @@ void debug_main(){
 	}
 	print_superblock();
 
-	if ((load_block(3) == SUCCESS))
+	printf("\n");
+
+	if ((load_block(5) == SUCCESS))
 	{
 		printf("load_block OK\n\n");
 	}
