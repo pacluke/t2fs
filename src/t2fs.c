@@ -49,7 +49,7 @@
 
 
 /* ESTRUTURA DO SUPERBLOCO */
-struct t2fs_superbloco SUPERBLOCK;
+struct t2fs_superbloco *SUPERBLOCK;
 char * CURRENT_BLOCK;
 /* ------------------------ */
 
