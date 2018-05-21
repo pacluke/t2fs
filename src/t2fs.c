@@ -102,21 +102,50 @@ int load_superblock(){
 	return ERROR;
 }
 
+void print_superblock(){
+
+	printf("LIBRARY ID:\t\t %c%c%c%c\n",
+		SUPERBLOCK->id[0],SUPERBLOCK->id[1],SUPERBLOCK->id[2],SUPERBLOCK->id[3]);
+
+	printf("LIBRARY VERSION:\t 0x%X\n",
+		SUPERBLOCK->version);
+
+	printf("SUPERBLOCK SIZE:\t (hex) %X \t (dec) %u\n",
+		SUPERBLOCK->superblockSize, SUPERBLOCK->superblockSize);
+
+	printf("FREE BLOCKS BITMAP SIZE: (hex) %X \t (dec) %u\n",
+		SUPERBLOCK->freeBlocksBitmapSize, SUPERBLOCK->freeBlocksBitmapSize);
+
+	printf("FREE I-NODE BITMAP SIZE: (hex) %X \t (dec) %u\n",
+		SUPERBLOCK->freeInodeBitmapSize, SUPERBLOCK->freeInodeBitmapSize);
+
+	printf("I-NODE AREA SIZE:\t (hex) %X \t (dec) %u\n",
+		SUPERBLOCK->inodeAreaSize, SUPERBLOCK->inodeAreaSize);
+
+	printf("BLOCK SIZE:\t\t (hex) %X \t (dec) %u\n",
+		SUPERBLOCK->blockSize, SUPERBLOCK->blockSize);
+	
+	printf("DISK SIZE:\t\t (hex) %X \t (dec) %u\n",
+		SUPERBLOCK->diskSize, SUPERBLOCK->diskSize);
+}
+
 void debug_main(){
 	if ((init_superblock() == 0))
 	{
-		printf("init_superblock OK\n");
+		printf("init_superblock OK\n\n");
 	}
 
 	if ((init_current_block() == 0))
 	{
-		printf("init_current_block OK\n");
+		printf("init_current_block OK\n\n");
 	}
 
 	if ((load_superblock() == 0))
 	{
-		printf("load_superblock OK\n");
+		printf("load_superblock OK\n\n");
 	}
+
+	print_superblock();
 }
 
 
