@@ -57,6 +57,7 @@ typedef struct {
     DWORD   fileSize;                   /* Numero de bytes do arquivo                          */
 } DIRENT2;
 
+
 #pragma pack(pop)
 
 

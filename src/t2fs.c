@@ -87,15 +87,22 @@
 
 /* ************************ */
 
-
-
 /* ESTRUTURA DO SUPERBLOCO */
 struct t2fs_superbloco *SUPERBLOCK;
 /* ------------------------ */
 
 /* ESTRUTURA DO BLOCO ATUAL */
-char *CURRENT_BLOCK;
+unsigned char *CURRENT_BLOCK;
 /* ------------------------ */
+
+/* I-NODE ATUAL */
+struct t2fs_inode *CURRENT_I_NODE;
+/* ------------------------ */
+
+/* I-NODE RAIZ */
+struct t2fs_inode *ROOT_I_NODE;
+/* ------------------------ */
+
 
 int init_superblock(){
 	SUPERBLOCK = (struct t2fs_superbloco *)malloc(sizeof(struct t2fs_superbloco));	
@@ -105,7 +112,7 @@ int init_superblock(){
 }
 
 int init_current_block(){
-	CURRENT_BLOCK = (char*)malloc(sizeof(char)*1024);
+	CURRENT_BLOCK = (unsigned char*)malloc(sizeof(unsigned char)*1024);
 	if(CURRENT_BLOCK)
 		return SUCCESS;
 	return ERROR;
@@ -231,12 +238,12 @@ int get_i_node(int i_node_n, struct t2fs_inode *i_node){
 }
 
 void print_i_node(struct t2fs_inode *i_node){
-	printf("BLOCKS FILE SIZE\t %d\n",i_node->blocksFileSize);
-	printf("BYTES FILE SIZE:\t %d\n",i_node->bytesFileSize);
-	printf("1ST DATA POINTER:\t %u\n",i_node->dataPtr[0]);
-	printf("2ND DATA POINTER:\t %u\n",i_node->dataPtr[1]);
-	printf("SINGLE INDIRECT POINTER: %u\n",i_node->singleIndPtr);
-	printf("DOUBLE INDIRECT POINTER: %u\n",i_node->doubleIndPtr);
+	printf("BLOCKS FILE SIZE\t %hu\n",i_node->blocksFileSize);
+	printf("BYTES FILE SIZE:\t %hu\n",i_node->bytesFileSize);
+	printf("1ST DATA POINTER:\t %hu\n",i_node->dataPtr[0]);
+	printf("2ND DATA POINTER:\t %hu\n",i_node->dataPtr[1]);
+	printf("SINGLE INDIRECT POINTER: %hu\n",i_node->singleIndPtr);
+	printf("DOUBLE INDIRECT POINTER: %hu\n",i_node->doubleIndPtr);
 }
 
 
@@ -272,30 +279,30 @@ void debug_main(){
 	}
 	print_i_node(i_node);
 	printf("\n");
-	if ((get_i_node(2, i_node) != SUCCESS))
-	{
-		printf("ERROR: get_i_node\n\n");
-	}
-	print_i_node(i_node);
-	printf("\n");
-	if ((get_i_node(4, i_node) != SUCCESS))
-	{
-		printf("ERROR: get_i_node\n\n");
-	}
-	print_i_node(i_node);
-	printf("\n");
-	if ((get_i_node(6, i_node) != SUCCESS))
-	{
-		printf("ERROR: get_i_node\n\n");
-	}
-	print_i_node(i_node);
-	printf("\n");
-	if ((get_i_node(8, i_node) != SUCCESS))
-	{
-		printf("ERROR: get_i_node\n\n");
-	}
-	print_i_node(i_node);
-	printf("\n");
+	// if ((get_i_node(2, i_node) != SUCCESS))
+	// {
+	// 	printf("ERROR: get_i_node\n\n");
+	// }
+	// print_i_node(i_node);
+	// printf("\n");
+	// if ((get_i_node(4, i_node) != SUCCESS))
+	// {
+	// 	printf("ERROR: get_i_node\n\n");
+	// }
+	// print_i_node(i_node);
+	// printf("\n");
+	// if ((get_i_node(6, i_node) != SUCCESS))
+	// {
+	// 	printf("ERROR: get_i_node\n\n");
+	// }
+	// print_i_node(i_node);
+	// printf("\n");
+	// if ((get_i_node(8, i_node) != SUCCESS))
+	// {
+	// 	printf("ERROR: get_i_node\n\n");
+	// }
+	// print_i_node(i_node);
+	// printf("\n");
 }
 
 /*-----------------------------------------------------------------------------
