@@ -118,6 +118,20 @@ int init_current_block(){
 	return ERROR;
 }
 
+int init_root_i_node(){
+	ROOT_I_NODE = (struct t2fs_inode *)malloc(sizeof(struct t2fs_inode));	
+	if(ROOT_I_NODE)
+		return SUCCESS;
+	return ERROR;
+}
+
+int init_current_i_node(){
+	CURRENT_I_NODE = (struct t2fs_inode *)malloc(sizeof(struct t2fs_inode));	
+	if(CURRENT_I_NODE)
+		return SUCCESS;
+	return ERROR;
+}
+
 int load_superblock(){
 	unsigned char buffer[SECTOR_SIZE];
 
@@ -151,6 +165,13 @@ int load_superblock(){
 	return ERROR;
 }
 
+int init_all(){
+	if((init_root_i_node() + init_current_i_node() + init_current_block() + init_superblock()) == SUCCESS)
+		if(load_superblock() == SUCCESS)
+			return SUCCESS;
+	return ERROR;
+}
+
 void print_superblock(){
 
 	printf("LIBRARY ID:\t\t %c%c%c%c\n",
@@ -176,6 +197,8 @@ void print_superblock(){
 
 	printf("DISK SIZE:\t\t (hex) %X \t (dec) %u BLOCKS or %u SECTORS\n",
 		SUPERBLOCK->diskSize, SUPERBLOCK->diskSize, SUPERBLOCK->diskSize*4);
+
+	printf("\n");
 }
 
 int load_block(int block){
@@ -217,10 +240,10 @@ int get_i_node(int i_node_n, struct t2fs_inode *i_node){
 			&CURRENT_BLOCK[position+BYTES_FILE_SIZE_OFFSET], 	BYTES_FILE_SIZE);
 
 		memcpy(&(i_node->dataPtr[0]),
-			&CURRENT_BLOCK[position+(DATA_POINTER_OFFSET/2)], (DATA_POINTER/2));
+			&CURRENT_BLOCK[position+(DATA_POINTER_OFFSET)], (DATA_POINTER/2));
 
 		memcpy(&(i_node->dataPtr[1]),
-			&CURRENT_BLOCK[position+(DATA_POINTER_OFFSET/2)], (DATA_POINTER/2));
+			&CURRENT_BLOCK[position+(DATA_POINTER_OFFSET+4)], (DATA_POINTER/2));
 
 		memcpy(&(i_node->singleIndPtr),
 			&CURRENT_BLOCK[position+SINGLE_IND_POINTER_OFFSET], SINGLE_IND_POINTER);
@@ -238,71 +261,79 @@ int get_i_node(int i_node_n, struct t2fs_inode *i_node){
 }
 
 void print_i_node(struct t2fs_inode *i_node){
-	printf("BLOCKS FILE SIZE\t %hu\n",i_node->blocksFileSize);
-	printf("BYTES FILE SIZE:\t %hu\n",i_node->bytesFileSize);
-	printf("1ST DATA POINTER:\t %hu\n",i_node->dataPtr[0]);
-	printf("2ND DATA POINTER:\t %hu\n",i_node->dataPtr[1]);
-	printf("SINGLE INDIRECT POINTER: %hu\n",i_node->singleIndPtr);
-	printf("DOUBLE INDIRECT POINTER: %hu\n",i_node->doubleIndPtr);
+	printf("BLOCKS FILE SIZE\t %u\n", i_node->blocksFileSize);
+	printf("BYTES FILE SIZE:\t %u\n", i_node->bytesFileSize);
+	printf("1ST DATA POINTER:\t %u\n", i_node->dataPtr[0]);
+	printf("2ND DATA POINTER:\t %u\n", i_node->dataPtr[1]);
+	printf("SINGLE INDIRECT POINTER: %u\n", i_node->singleIndPtr);
+	printf("DOUBLE INDIRECT POINTER: %u\n", i_node->doubleIndPtr);
+	printf("\n");
+}
+
+
+void print_record(struct t2fs_record *record){
+	printf("TYPE VALUE: \t0x0%X (0x01 FILE, 0x02 DIR)\n" ,record->TypeVal);
+	printf("NAME: \t\t%s\n", record->name);
+	printf("I-NODE NUMBER:  %d\n", record->inodeNumber);
+	printf("\n");
+}
+
+
+int read_i_node_content(struct t2fs_inode *dir){
+	struct t2fs_record *record;
+	record = (struct t2fs_record *) malloc(sizeof(struct t2fs_record));
+
+	if(CURRENT_I_NODE->blocksFileSize > 0){
+		if (load_block(dir->dataPtr[0]) == SUCCESS){
+			for(int i = 0; i < 16; i++) {
+				memcpy(record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
+				if(record->TypeVal == TYPEVAL_REGULAR || record->TypeVal == TYPEVAL_DIRETORIO){
+					print_record(record);
+				}
+			}
+		}
+		return SUCCESS;
+	}
+	if(CURRENT_I_NODE->blocksFileSize > 1){
+		if (load_block(dir->dataPtr[1]) == SUCCESS){
+			if(record->TypeVal == TYPEVAL_REGULAR || record->TypeVal == TYPEVAL_DIRETORIO){
+				for(int i = 0; i < 16; i++) {
+					memcpy(record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
+					print_record(record);
+				}
+			}
+		}
+		return SUCCESS;
+	}
+	if(dir->blocksFileSize > 2){
+		printf("TODO: INDIRECT READING\n");
+		return SUCCESS;
+	}
+	return ERROR;
 }
 
 
 
 void debug_main(){
-	if ((init_superblock() != SUCCESS))
-	{
-		printf("ERROR: init_superblock\n\n");
-	}
 
-	if ((init_current_block() != SUCCESS))
-	{
-		printf("ERROR: init_current_block\n\n");
-	}
-
-	if ((load_superblock() != SUCCESS))
-	{
-		printf("ERROR: load_superblock\n\n");
-	}
+	printf("\n");
+	if (init_all() == SUCCESS)
+		printf("[init_all] Estruturas de dados iniciadas com sucesso e superbloco carregado.\n");
+	printf("\n\n..:: INFO SOBRE O SUEPRBLOCO ::..\n\n");
 	print_superblock();
-
 	printf("\n");
 
-	if ((load_block(67) != SUCCESS))
-	{
-		printf("ERROR: load_block\n\n");
-	}
+	if (load_block(3) == SUCCESS)
+		printf("[load_block] Carregamento do bloco 3 realizado com sucesso.\n\n");
 
-	struct t2fs_inode *i_node = (struct t2fs_inode *)malloc(sizeof(struct t2fs_inode));
-	if ((get_i_node(0, i_node) != SUCCESS))
-	{
-		printf("ERROR: get_i_node\n\n");
-	}
-	print_i_node(i_node);
-	printf("\n");
-	// if ((get_i_node(2, i_node) != SUCCESS))
-	// {
-	// 	printf("ERROR: get_i_node\n\n");
-	// }
-	// print_i_node(i_node);
-	// printf("\n");
-	// if ((get_i_node(4, i_node) != SUCCESS))
-	// {
-	// 	printf("ERROR: get_i_node\n\n");
-	// }
-	// print_i_node(i_node);
-	// printf("\n");
-	// if ((get_i_node(6, i_node) != SUCCESS))
-	// {
-	// 	printf("ERROR: get_i_node\n\n");
-	// }
-	// print_i_node(i_node);
-	// printf("\n");
-	// if ((get_i_node(8, i_node) != SUCCESS))
-	// {
-	// 	printf("ERROR: get_i_node\n\n");
-	// }
-	// print_i_node(i_node);
-	// printf("\n");
+	if (get_i_node(0, ROOT_I_NODE) == SUCCESS)
+		printf("[get_i_node] I-node raiz é o 0 do bloco 3.\n\n");
+	if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
+		printf("[get_i_node] I-node de trabalho é o nodo raiz.\n\n");
+
+	printf("[read_i_node_content] Esse é o conteúdo do i-node raíz: \n\n");
+
+	read_i_node_content(CURRENT_I_NODE);
 }
 
 /*-----------------------------------------------------------------------------
