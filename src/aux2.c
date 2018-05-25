@@ -192,12 +192,11 @@ void print_record(struct t2fs_record *record){
 	printf("\n");
 }
 
-
 int read_i_node_content(struct t2fs_inode *dir){
 	struct t2fs_record *record;
 	record = (struct t2fs_record *) malloc(sizeof(struct t2fs_record));
 
-	if(CURRENT_I_NODE->blocksFileSize > 0){
+	if(dir->blocksFileSize > 0){
 		if (load_block(dir->dataPtr[0]) == SUCCESS){
 			for(int i = 0; i < 16; i++) {
 				memcpy(record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
@@ -208,7 +207,7 @@ int read_i_node_content(struct t2fs_inode *dir){
 		}
 		return SUCCESS;
 	}
-	if(CURRENT_I_NODE->blocksFileSize > 1){
+	if(dir->blocksFileSize > 1){
 		if (load_block(dir->dataPtr[1]) == SUCCESS){
 			if(record->TypeVal == TYPEVAL_REGULAR || record->TypeVal == TYPEVAL_DIRETORIO){
 				for(int i = 0; i < 16; i++) {
@@ -225,6 +224,12 @@ int read_i_node_content(struct t2fs_inode *dir){
 	}
 	return ERROR;
 }
+
+char *head_dir(char *path){
+	char *result = strtok(path, "/");
+	return result;
+}
+
 
 
 

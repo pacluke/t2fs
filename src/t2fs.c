@@ -112,7 +112,6 @@ struct t2fs_record RECORDS[255];
 /* ------------------------ */
 
 
-
 void debug_main(){
 
 	printf("\n");
@@ -135,6 +134,15 @@ void debug_main(){
 	read_i_node_content(CURRENT_I_NODE);
 
 	init_records_list();
+
+	char pathname[59] = "/dir1/dir2/dir3/dir4/dir5";
+
+	char *dir = head_dir(pathname);
+
+	printf("%s\n", dir);
+
+	printf("%d\n", strlen(dir));
+
 }
 
 /*-----------------------------------------------------------------------------
