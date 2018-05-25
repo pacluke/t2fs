@@ -18,9 +18,10 @@ all: compile library
 
 compile:
 	@gcc  -g -c src/t2fs.c -I include -o bin/t2fs.o -Wall
+	@gcc  -g -c src/aux2.c -I include -o bin/aux2.o -Wall
 
 library:
-	@ar crs lib/libt2fs.a bin/t2fs.o lib/apidisk.o lib/bitmap2.o
+	@ar crs lib/libt2fs.a bin/t2fs.o bin/aux2.o lib/apidisk.o lib/bitmap2.o
 
 clean:
 	@cp lib/apidisk.o bin/
