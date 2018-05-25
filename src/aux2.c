@@ -8,85 +8,6 @@
 #include "../include/bitmap2.h"
 #include "../include/aux2.h"
 
-/* ------------------------ */
-#define ERROR -10 //error code
-#define SUCCESS 0	//sucess code
-/* ------------------------ */
-#define TRUE 1
-#define FALSE 0
-/* ------------------------ */
-#define NAMES "Lucas Flores 00242317\nMatheus Westhelle 00206688\nRodrigo Madruga 00180669\n"
-#define N_SIZE 85
-/* ------------------------ */
-
-/* ************************ */
-
-/* DEFINES DO SUPERBLOCO */
-/* ------------------------ */
-#define LIB_ID_OFFSET 0
-#define LIB_ID 4
-/* ------------------------ */
-#define LIB_VERSION_OFFSET 4
-#define LIB_VERSION 2
-/* ------------------------ */
-#define SUPER_BLOCK_SIZE_OFFSET 6
-#define SUPER_BLOCK_SIZE 2
-/* ------------------------ */
-#define FREE_BLOCKS_BITMAP_SIZE_OFFSET 8
-#define FREE_BLOCKS_BITMAP_SIZE 2
-/* ------------------------ */
-#define FREE_INODE_BITMAP_SIZE_OFFSET 10
-#define FREE_INODE_BITMAP_SIZE 2
-/* ------------------------ */
-#define INODE_AREA_SIZE_OFFSET 12
-#define INODE_AREA_SIZE 2
-/* ------------------------ */
-#define BLOCK_SIZE_OFFSET 14
-#define BLOCK_SIZE 2
-/* ------------------------ */
-#define DISK_SIZE_OFFSET 16
-#define DISK_SIZE 4
-/* ------------------------ */
-
-/* ************************ */
-
-/* DEFINES DO I-NODE */
-/* ------------------------ */
-#define BLOCKS_FILE_SIZE_OFFSET 0
-#define BLOCKS_FILE_SIZE 4
-/* ------------------------ */
-#define BYTES_FILE_SIZE_OFFSET 4
-#define BYTES_FILE_SIZE 4
-/* ------------------------ */
-#define DATA_POINTER_OFFSET 8
-#define DATA_POINTER 8
-/* ------------------------ */
-#define SINGLE_IND_POINTER_OFFSET 16
-#define SINGLE_IND_POINTER 4
-/* ------------------------ */
-#define DOUBLE_IND_POINTER_OFFSET 20
-#define DOUBLE_IND_POINTER 4
-/* ------------------------ */
-#define RESERVED_OFFSET 24
-#define RESERVED 8
-/* ------------------------ */
-
-/* ************************ */
-
-/* DEFINES DO DIRETÓRIO/ARQUIVO */
-/* ------------------------ */
-#define TYPE_VALUE_OFFSET 0
-#define TYPE_VALUE 1
-/* ------------------------ */
-#define DIR_NAME_OFFSET 1
-#define DIR_NAME 59
-/* ------------------------ */
-#define I_NODE_NUMBER_OFFSET 60
-#define I_NODE_NUMBER 4
-/* ------------------------ */
-
-/* ************************ */
-
 int init_superblock(){
 	SUPERBLOCK = (struct t2fs_superbloco *)malloc(sizeof(struct t2fs_superbloco));	
 	if(SUPERBLOCK)
@@ -113,6 +34,14 @@ int init_current_i_node(){
 	if(CURRENT_I_NODE)
 		return SUCCESS;
 	return ERROR;
+}
+
+int init_records_list(){
+	for (int i = 0; i < 100; ++i)
+	{
+		RECORDS[i].TypeVal = TYPEVAL_INVALIDO;
+	}
+	return SUCCESS;
 }
 
 int load_superblock(){
@@ -215,32 +144,33 @@ int load_block(int block){
 int get_i_node(int i_node_n, struct t2fs_inode *i_node){
 
 	int position = i_node_n*(SUPERBLOCK->inodeAreaSize);
+	int inode_block = (SUPERBLOCK->superblockSize + SUPERBLOCK->freeBlocksBitmapSize + SUPERBLOCK->freeInodeBitmapSize);
 
-	if(i_node){
-		memcpy(&(i_node->blocksFileSize),
-			&CURRENT_BLOCK[position+BLOCKS_FILE_SIZE_OFFSET], BLOCKS_FILE_SIZE);
+	if (load_block(inode_block) == SUCCESS){
+		if(i_node){
+			memcpy(&(i_node->blocksFileSize),
+				&CURRENT_BLOCK[position+BLOCKS_FILE_SIZE_OFFSET], BLOCKS_FILE_SIZE);
 
-		memcpy(&(i_node->bytesFileSize),
-			&CURRENT_BLOCK[position+BYTES_FILE_SIZE_OFFSET], 	BYTES_FILE_SIZE);
+			memcpy(&(i_node->bytesFileSize),
+				&CURRENT_BLOCK[position+BYTES_FILE_SIZE_OFFSET], 	BYTES_FILE_SIZE);
 
-		memcpy(&(i_node->dataPtr[0]),
-			&CURRENT_BLOCK[position+(DATA_POINTER_OFFSET)], (DATA_POINTER/2));
+			memcpy(&(i_node->dataPtr[0]),
+				&CURRENT_BLOCK[position+(DATA_POINTER_OFFSET)], (DATA_POINTER/2));
 
-		memcpy(&(i_node->dataPtr[1]),
-			&CURRENT_BLOCK[position+(DATA_POINTER_OFFSET+4)], (DATA_POINTER/2));
+			memcpy(&(i_node->dataPtr[1]),
+				&CURRENT_BLOCK[position+(DATA_POINTER_OFFSET+4)], (DATA_POINTER/2));
 
-		memcpy(&(i_node->singleIndPtr),
-			&CURRENT_BLOCK[position+SINGLE_IND_POINTER_OFFSET], SINGLE_IND_POINTER);
+			memcpy(&(i_node->singleIndPtr),
+				&CURRENT_BLOCK[position+SINGLE_IND_POINTER_OFFSET], SINGLE_IND_POINTER);
 
-		memcpy(&(i_node->doubleIndPtr),
-			&CURRENT_BLOCK[position+DOUBLE_IND_POINTER_OFFSET], DOUBLE_IND_POINTER);
+			memcpy(&(i_node->doubleIndPtr),
+				&CURRENT_BLOCK[position+DOUBLE_IND_POINTER_OFFSET], DOUBLE_IND_POINTER);
 
-		memcpy(&(i_node->reservado),
-			&CURRENT_BLOCK[position+RESERVED_OFFSET], RESERVED);
-
-		return SUCCESS;
+			memcpy(&(i_node->reservado),
+				&CURRENT_BLOCK[position+RESERVED_OFFSET], RESERVED);
+			return SUCCESS;
+		}
 	}
-
 	return ERROR;
 }
 
@@ -295,3 +225,6 @@ int read_i_node_content(struct t2fs_inode *dir){
 	}
 	return ERROR;
 }
+
+
+
