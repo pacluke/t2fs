@@ -140,7 +140,7 @@ void debug_main(){
 
 	init_records_list();
 
-	char pathname01[200] = "/dir0/dir1/dir2/dir3/dir4/dir5/dir6/dir7/dir8/dir9/dir10/dir11/dir12/dir13/dir14/file";
+	// char pathname01[200] = "/dir0/dir1/dir2/dir3/dir4/dir5/dir6/dir7/dir8/dir9/dir10/dir11/dir12/dir13/dir14/file";
 	// char pathname02[59] = "dir1/dir2/dir3/dir4/file";
 
 	// char *hd01 = head_dir(pathname01);
@@ -152,14 +152,22 @@ void debug_main(){
 	// printf("PATH02\n HEAD: %s, TAIL: %s\n", hd02, tl02);
 
 	// printf("%s\n", pathname01);
-	char *hd01 = tail_dir(pathname01);
+	// char *hd01 = tail_dir(pathname01);
 	// printf("%s\n", hd01);
-	while (hd01 != NULL){
-		printf("tail: %s\n", hd01);
-		printf("head: %s\n", head_dir(hd01));
-		printf("--\n");
-		hd01 = tail_dir(hd01);
-	}
+	// while (hd01 != NULL){
+	// 	printf("tail: %s\n", hd01);
+	// 	printf("head: %s\n", head_dir(hd01));
+	// 	printf("--\n");
+	// 	hd01 = tail_dir(hd01);
+	// }
+
+	int file3_inode_number;
+
+	char filename[59] = "/file3";
+
+	file3_inode_number = find_file(ROOT_I_NODE, filename);
+
+	printf("INODE NUMBER OF FILE3: %d\n", file3_inode_number);
 
 }
 

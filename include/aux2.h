@@ -129,4 +129,4 @@ void print_record(struct t2fs_record *record);
 int read_i_node_content(struct t2fs_inode *dir);
 char *head_dir(char *path);
 char *tail_dir(char *path);
-int find_record_by_name(int block, struct t2fs_record *record, char* name);
+int find_file(struct t2fs_inode *dir_inode, char* filename);
