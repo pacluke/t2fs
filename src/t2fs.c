@@ -135,13 +135,16 @@ void debug_main(){
 
 	init_records_list();
 
-	char pathname[59] = "/dir1/dir2/dir3/dir4/dir5";
+	char pathname01[59] = "/dir1/dir2/dir3/dir4/file";
+	char pathname02[59] = "dir1/dir2/dir3/dir4/file";
 
-	char *dir = head_dir(pathname);
+	char *hd01 = head_dir(pathname01);
+	char *hd02 = head_dir(pathname02);
+	char *tl01 = tail_dir(pathname01);
+	char *tl02 = tail_dir(pathname02);
 
-	printf("%s\n", dir);
-
-	printf("%d\n", strlen(dir));
+	printf("PATH01\n HEAD: %s, TAIL: %s\n", hd01, tl01);
+	printf("PATH02\n HEAD: %s, TAIL: %s\n", hd02, tl02);
 
 }
 

@@ -121,3 +121,4 @@ void print_i_node(struct t2fs_inode *i_node);
 void print_record(struct t2fs_record *record);
 int read_i_node_content(struct t2fs_inode *dir);
 char *head_dir(char *path);
+char *tail_dir(char *path);

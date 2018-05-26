@@ -226,8 +226,38 @@ int read_i_node_content(struct t2fs_inode *dir){
 }
 
 char *head_dir(char *path){
-	char *result = strtok(path, "/");
+	char *path_copy = malloc(sizeof(char)*strlen(path));
+	char *result;
+
+	strcpy(path_copy, path);
+	result = strtok(path_copy, "/");
+
 	return result;
+}
+
+char *tail_dir(char *path){
+	char *head;
+	head = head_dir(path);
+
+	int head_size = strlen(head);
+	int tail_size = strlen(path) - head_size;
+
+	if (path[0] == '/')
+		head_size+=1;
+
+	char *tail = malloc(sizeof(char)*tail_size);
+
+	int tail_count = 0;
+
+	for (int i = head_size; i < strlen(path); ++i)
+	{
+		tail[tail_count] = path[i];
+		tail_count++;
+	}
+
+	tail[tail_size] = '\0';
+
+	return tail;
 }
 
 
