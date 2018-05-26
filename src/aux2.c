@@ -198,7 +198,7 @@ int read_i_node_content(struct t2fs_inode *dir){
 
 	if(dir->blocksFileSize > 0){
 		if (load_block(dir->dataPtr[0]) == SUCCESS){
-			for(int i = 0; i < 16; i++) {
+			for(int i = 0; i < MAX_RECORDS; i++) {
 				memcpy(record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
 				if(record->TypeVal == TYPEVAL_REGULAR || record->TypeVal == TYPEVAL_DIRETORIO){
 					print_record(record);
@@ -210,7 +210,7 @@ int read_i_node_content(struct t2fs_inode *dir){
 	if(dir->blocksFileSize > 1){
 		if (load_block(dir->dataPtr[1]) == SUCCESS){
 			if(record->TypeVal == TYPEVAL_REGULAR || record->TypeVal == TYPEVAL_DIRETORIO){
-				for(int i = 0; i < 16; i++) {
+				for(int i = 0; i < MAX_RECORDS; i++) {
 					memcpy(record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
 					print_record(record);
 				}
@@ -239,11 +239,17 @@ char *tail_dir(char *path){
 	char *head;
 	head = head_dir(path);
 
+	if (strlen(path)-1 == strlen(head)){
+		return NULL;
+	}
+
 	int head_size = strlen(head);
 	int tail_size = strlen(path) - head_size;
 
-	if (path[0] == '/')
+	if (path[0] == '/'){
 		head_size+=1;
+		// tail_size-=1;
+	}
 
 	char *tail = malloc(sizeof(char)*tail_size);
 
@@ -255,9 +261,19 @@ char *tail_dir(char *path){
 		tail_count++;
 	}
 
-	tail[tail_size] = '\0';
-
+	tail[tail_count] = '\0';
 	return tail;
+}
+
+int find_record_by_name(int block, struct t2fs_record *record, char* name){
+
+	load_block(block);
+	for (int i = 0; i < MAX_RECORDS; ++i)
+	{
+		/* code */
+	}
+
+	return ERROR;
 }
 
 

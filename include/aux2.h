@@ -87,6 +87,13 @@
 
 /* ************************ */
 
+/* NÚMERO DE ARQUIVOS */
+/* ------------------------ */
+#define MAX_RECORDS (64/4)
+/* ------------------------ */
+
+/* ************************ */
+
 /* ESTRUTURA DO SUPERBLOCO */
 extern struct t2fs_superbloco *SUPERBLOCK;
 /* ------------------------ */
@@ -122,3 +129,4 @@ void print_record(struct t2fs_record *record);
 int read_i_node_content(struct t2fs_inode *dir);
 char *head_dir(char *path);
 char *tail_dir(char *path);
+int find_record_by_name(int block, struct t2fs_record *record, char* name);

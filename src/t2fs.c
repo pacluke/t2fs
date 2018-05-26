@@ -87,6 +87,11 @@
 
 /* ************************ */
 
+/* NÚMERO DE ARQUIVOS */
+/* ------------------------ */
+#define MAX_RECORDS (64/4)
+/* ------------------------ */
+
 /* ESTRUTURA DO SUPERBLOCO */
 struct t2fs_superbloco *SUPERBLOCK;
 /* ------------------------ */
@@ -135,16 +140,26 @@ void debug_main(){
 
 	init_records_list();
 
-	char pathname01[59] = "/dir1/dir2/dir3/dir4/file";
-	char pathname02[59] = "dir1/dir2/dir3/dir4/file";
+	char pathname01[200] = "/dir0/dir1/dir2/dir3/dir4/dir5/dir6/dir7/dir8/dir9/dir10/dir11/dir12/dir13/dir14/file";
+	// char pathname02[59] = "dir1/dir2/dir3/dir4/file";
 
-	char *hd01 = head_dir(pathname01);
-	char *hd02 = head_dir(pathname02);
-	char *tl01 = tail_dir(pathname01);
-	char *tl02 = tail_dir(pathname02);
+	// char *hd01 = head_dir(pathname01);
+	// char *hd02 = head_dir(pathname02);
+	// char *tl01 = tail_dir(pathname01);
+	// char *tl02 = tail_dir(pathname02);
 
-	printf("PATH01\n HEAD: %s, TAIL: %s\n", hd01, tl01);
-	printf("PATH02\n HEAD: %s, TAIL: %s\n", hd02, tl02);
+	// printf("PATH01\n HEAD: %s, TAIL: %s\n", hd01, tl01);
+	// printf("PATH02\n HEAD: %s, TAIL: %s\n", hd02, tl02);
+
+	// printf("%s\n", pathname01);
+	char *hd01 = tail_dir(pathname01);
+	// printf("%s\n", hd01);
+	while (hd01 != NULL){
+		printf("tail: %s\n", hd01);
+		printf("head: %s\n", head_dir(hd01));
+		printf("--\n");
+		hd01 = tail_dir(hd01);
+	}
 
 }
 
