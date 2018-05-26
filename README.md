@@ -6,10 +6,9 @@ Segundo Trabalho da disciplina de Sistemas Operacionais (INF/UFRGS)
 | 0 					| 4 				| *id* 						| "T2FS" 	 |
 | 4 					| 2 				| *version* 				| 0x7E21     |
 | 6 					| 2 				| *superBlockSize*  		| 1	 		 |
-| 8 					| 2	 				| *freeBlocksBitmapSize* 	| bb 	 	 |
-| 10 					| 2	 				| *freeInodeBitmapSize* 	| bi 		 |
-| 12 					| 2 				| *inodeAreaSize*  			| i 		 |
-| 14 					| 2 				| *blockSize*  				| n  		 |
+| 8 					| 2	 				| *freeBlocksBitmapSize* 	| 1 	 	 |
+| 10 					| 2	 				| *freeInodeBitmapSize* 	| 1 		 |
+| 12 					| 2 				| *inodeAreaSize*  			| 64 		 |
+| 14 					| 2 				| *blockSize*  				| 4  		 |
 | 16 			     	| 4 				| *diskSize*				| 32768 	 |
 | 20 até o final (255)  | - 				| *resevado*				| - 		 | 
-| --------------------- | ----------------- | ------------------------- | ---------- |
