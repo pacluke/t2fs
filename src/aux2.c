@@ -270,7 +270,9 @@ int find_file(struct t2fs_inode *dir_inode, char* filename){
 	struct t2fs_record *file;
 	char *name = head_dir(filename);
 
-	printf("%s\n", name);
+	// printf("\n\n\n\n\n\n\n");
+	// printf("%s\n", name);
+	// read_i_node_content(dir_inode);
 
 	file = (struct t2fs_record *) malloc(sizeof(struct t2fs_record));
 
@@ -278,16 +280,15 @@ int find_file(struct t2fs_inode *dir_inode, char* filename){
 		if (load_block(dir_inode->dataPtr[0]) == SUCCESS){
 			for (int i = 0; i < MAX_RECORDS; ++i){
 				memcpy(file, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
-				print_record(file);
 				if(file->TypeVal == TYPEVAL_REGULAR && (strcmp(name, file->name) == SUCCESS)){
 					return file->inodeNumber;
 				}
-
-				else if (file->TypeVal == TYPEVAL_DIRETORIO){
+				else if (file->TypeVal == TYPEVAL_DIRETORIO && (strcmp(name, file->name) == SUCCESS)){
 					char *tail = tail_dir(filename);
 					if (tail != NULL){
 						struct t2fs_inode *next_inode;
 						next_inode = (struct t2fs_inode *) malloc(sizeof(struct t2fs_inode));
+						// printf("INODE NUMBER DO PROXIMO DIRETORIO: %d\n", file->inodeNumber);
 						if (get_i_node(file->inodeNumber, next_inode) == SUCCESS){
 							return find_file(next_inode, tail_dir(filename));
 						}
@@ -298,7 +299,6 @@ int find_file(struct t2fs_inode *dir_inode, char* filename){
 		else {
 			return ERROR;
 		}
-
 	}
 	return ERROR;
 }

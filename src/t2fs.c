@@ -165,9 +165,29 @@ void debug_main(){
 
 	char filename[59] = "/file3";
 
+	// print_i_node(CURRENT_I_NODE);
+
 	file3_inode_number = find_file(ROOT_I_NODE, filename);
 
-	printf("INODE NUMBER OF FILE3: %d\n", file3_inode_number);
+	printf("INODE NUMBER OF FILE3: %d\n\n", file3_inode_number);
+
+	if (get_i_node(1, CURRENT_I_NODE) == SUCCESS)
+		printf("[get_i_node] I-node de trabalho é o node 1.\n\n");
+
+	read_i_node_content(CURRENT_I_NODE);
+
+	// print_i_node(CURRENT_I_NODE);
+
+	// int file111_inode_number;
+
+	// char filename111[59] = "/dir1/file111";
+
+	// if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
+	// 	printf("[get_i_node] I-node de trabalho é o nodo raiz.\n\n");
+
+	// file111_inode_number = find_file(CURRENT_I_NODE, filename111);
+
+	// printf("INODE NUMBER OF FILE111: %d\n", file111_inode_number);
 
 }
 
