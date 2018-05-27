@@ -178,16 +178,37 @@ void debug_main(){
 
 	// print_i_node(CURRENT_I_NODE);
 
-	// int file111_inode_number;
+	int file111_inode_number;
 
-	// char filename111[59] = "/dir1/file111";
+	char filename111[59] = "/dir1/file111";
 
-	// if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
-	// 	printf("[get_i_node] I-node de trabalho é o nodo raiz.\n\n");
+	if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
+		printf("[get_i_node] I-node de trabalho é o nodo raiz.\n\n");
 
-	// file111_inode_number = find_file(CURRENT_I_NODE, filename111);
+	file111_inode_number = find_file(CURRENT_I_NODE, filename111);
 
-	// printf("INODE NUMBER OF FILE111: %d\n", file111_inode_number);
+	printf("INODE NUMBER OF FILE111: %d\n", file111_inode_number);
+
+	int dir1_inode_number;
+
+	char filenamedir1[59] = "/dir1";
+
+	if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
+		printf("[get_i_node] I-node de trabalho é o nodo raiz.\n\n");
+
+	dir1_inode_number = find_directory(CURRENT_I_NODE, filenamedir1);
+
+	printf("INODE NUMBER OF DIR1: %d\n", dir1_inode_number);
+
+	// int inode_value = 1;
+
+	// while(inode_value >= 0){
+	// 	printf("INODE: ");
+	// 	scanf("%d", &inode_value);
+	// 	if (get_i_node(inode_value, CURRENT_I_NODE) == SUCCESS)
+	// 		printf("[get_i_node] I-node de trabalho é o node %d.\n\n", inode_value);
+	// 	read_i_node_content(CURRENT_I_NODE);
+	// }
 
 }
 
