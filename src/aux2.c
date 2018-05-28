@@ -348,12 +348,11 @@ int find_directory(struct t2fs_inode *dir_inode, char* dir_name){
 				if(directory->TypeVal == TYPEVAL_DIRETORIO && (strcmp(name, directory->name) == SUCCESS)){
 					return directory->inodeNumber;
 				}
-				else {
+				else if (directory->TypeVal == TYPEVAL_DIRETORIO && (strcmp(name, directory->name) == SUCCESS)){
 					char *tail = tail_dir(dir_name);
 					if (tail != NULL){
 						struct t2fs_inode *next_inode;
 						next_inode = (struct t2fs_inode *) malloc(sizeof(struct t2fs_inode));
-						// printf("INODE NUMBER DO PROXIMO DIRETORIO: %d\n", directory->inodeNumber);
 						if (get_i_node(directory->inodeNumber, next_inode) == SUCCESS){
 							return find_file(next_inode, tail_dir(dir_name));
 						}
