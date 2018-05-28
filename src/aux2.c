@@ -252,16 +252,21 @@ char *tail_dir(char *path){
 	char *head;
 	head = head_dir(path);
 
-	if (strlen(path)-1 == strlen(head)){
+	if ((strlen(path)-1 == strlen(head)) || (strlen(path) == strlen(head))){
 		return NULL;
 	}
 
 	int head_size = strlen(head);
-	int tail_size = strlen(path) - head_size;
+	int tail_size = strlen(path) - head_size+1;
 
-	if (path[0] == '/'){
+	if ((path[0] == '/')){
 		head_size+=1;
 		// tail_size-=1;
+	}
+	if ((path[strlen(path)-1] == '/')){
+		head_size+=1;
+		// tail_size-=1;
+		// printf("aaaaaa\n");
 	}
 
 	char *tail = malloc(sizeof(char)*tail_size);
@@ -293,7 +298,7 @@ struct t2fs_record *find_file(struct t2fs_inode *dir_inode, char* filename){
 		if (load_block(dir_inode->dataPtr[0]) == SUCCESS){
 			for (int i = 0; i < MAX_RECORDS; ++i){
 				memcpy(file, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
-				if(file->TypeVal == TYPEVAL_REGULAR && (strcmp(name, file->name) == SUCCESS)){
+				if(file->TypeVal == TYPEVAL_REGULAR && ((strcmp(name, file->name) == SUCCESS))){
 					return file;
 				}
 				else if (file->TypeVal == TYPEVAL_DIRETORIO && (strcmp(name, file->name) == SUCCESS)){
@@ -340,6 +345,7 @@ struct t2fs_record *find_directory(struct t2fs_inode *dir_inode, char* dir_name)
 
 	// printf("\n\n\n\n\n\n\n");
 	// printf("%s\n", name);
+	// printf("%s\n", tail_dir(dir_name));
 	// read_i_node_content(dir_inode);
 
 	directory = (struct t2fs_record *) malloc(sizeof(struct t2fs_record));
@@ -348,7 +354,13 @@ struct t2fs_record *find_directory(struct t2fs_inode *dir_inode, char* dir_name)
 		if (load_block(dir_inode->dataPtr[0]) == SUCCESS){
 			for (int i = 0; i < MAX_RECORDS; ++i){
 				memcpy(directory, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
+
+				// printf("???1 %d\n", directory->TypeVal == TYPEVAL_DIRETORIO);
+				// printf("???2 %d\n", (strcmp(name, directory->name) == SUCCESS));
+				// printf("???3 %d\n", (tail_dir(dir_name) == NULL));
+
 				if(directory->TypeVal == TYPEVAL_DIRETORIO && (strcmp(name, directory->name) == SUCCESS) && (tail_dir(dir_name) == NULL)){
+					// printf("eita\n");
 					return directory;
 				}
 

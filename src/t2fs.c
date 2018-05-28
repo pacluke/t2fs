@@ -171,7 +171,7 @@ void debug_main(){
 	printf("INODE NUMBER OF FILE3: %d\n\n", aux->inodeNumber);
 	print_record(aux);
 
-	read_i_node_content(CURRENT_I_NODE);
+	// read_i_node_content(CURRENT_I_NODE);
 
 	// print_i_node(CURRENT_I_NODE);
 
@@ -204,9 +204,15 @@ void debug_main(){
 	// 	read_i_node_content(CURRENT_I_NODE);
 	// }
 
+	/*
+	******************************************************
+		Testes OPEN2
+	******************************************************
+	*/
+
 	char filename111[59] = "/dir2/dir21/file211";
 	char filename112[59] = "dir21/file211";
-	char filename113[59] = "/file3";
+	char filename113[59] = "file3";
 
 	printf("[open2] tentando abrir %s\n", filename111);
 	int file_hande = open2(filename111);
@@ -221,13 +227,36 @@ void debug_main(){
 	printf("HANDLE: %d\n", file_hande);
 	print_record(FILES[file_hande].record_info);
 
-	if (get_i_node(5, CURRENT_I_NODE) == SUCCESS)
+	if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
 		printf("[get_i_node] I-node de trabalho é o i-node 5.\n\n");
 
 	printf("[open2] tentando abrir %s\n", filename113);
 	file_hande = open2(filename113);
-	printf("HANDLE: %d\n", file_hande);
 	print_record(FILES[file_hande].record_info);
+
+		/*
+	******************************************************
+		Testes OPENDIR2
+	******************************************************
+	*/
+
+	char path111[59] = "/dir2/dir21/";
+	char path112[59] = "dir21";
+	// char path113[59] = "/file3";
+
+	printf("[opendir2] tentando abrir %s\n", path111);
+	int dir_handle = opendir2(path111);
+	printf("HANDLE: %d\n", dir_handle);
+	print_record(DIRECTORIES[dir_handle].record_info);
+
+	if (get_i_node(4, CURRENT_I_NODE) == SUCCESS)
+		printf("[get_i_node] I-node de trabalho é o i-node 4.\n\n");
+		// read_i_node_content(CURRENT_I_NODE);	
+
+	printf("[opendir2] tentando abrir %s\n", path112);
+	dir_handle = opendir2(path112);
+	printf("HANDLE: %d\n", dir_handle);
+	print_record(DIRECTORIES[dir_handle].record_info);
 
 }
 
@@ -329,8 +358,8 @@ FILE2 open2 (char *filename){
 		for (int i = 0; i < 10; ++i){
 			if (FILES[i].record_info->TypeVal == TYPEVAL_REGULAR &&
 				FILES[i].record_info->inodeNumber == file_record->inodeNumber){
+				FILES[i].seek_pointer = 0;
 				handle = i;
-
 				return handle;
 			}
 			else if (handle == -10 && 
@@ -545,8 +574,51 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna o identifi
 -----------------------------------------------------------------------------*/
 DIR2 opendir2 (char *pathname){
 
+	struct t2fs_inode *work_directory;
+	struct t2fs_record *file_record = malloc(sizeof(struct t2fs_record));
+	int handle = -10;
 
-	return ERROR;
+	if (pathname[0] == '/'){
+		work_directory = ROOT_I_NODE;
+	}
+	else {
+		work_directory = CURRENT_I_NODE;
+	}
+
+	// printf("wooow\n");
+	file_record = find_directory(work_directory, pathname);
+	// printf("file_record->inodeNumber = %d\n", file_record->inodeNumber);
+
+	if (file_record->inodeNumber != ERROR){
+		for (int i = 0; i < 10; ++i){
+			if (DIRECTORIES[i].record_info->TypeVal == TYPEVAL_REGULAR &&
+				DIRECTORIES[i].record_info->inodeNumber == file_record->inodeNumber){
+				handle = i;
+
+				return handle;
+			}
+			else if (handle == -10 && 
+				DIRECTORIES[i].record_info->TypeVal == TYPEVAL_INVALIDO){
+				handle = i;
+			}
+		}
+
+		if (handle >= 0){
+			DIRECTORIES[handle].record_info = file_record;
+			return handle;
+		}
+
+		else {
+			printf("ERRO: Maximo de diretórios abertos atingido.\n");
+			return ERROR;
+		}
+	}
+
+	else{
+		printf("ERRO: Diretório não encontrado.\n");
+		return ERROR;
+	}
+
 }
 
 
