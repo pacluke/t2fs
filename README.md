@@ -1,4 +1,5 @@
 # t2fs
+
 Segundo Trabalho da disciplina de Sistemas Operacionais (INF/UFRGS)
 
 | Posição relativa		| Tamanho (bytes)   | Nome 				  		| Valor      |
@@ -12,3 +13,27 @@ Segundo Trabalho da disciplina de Sistemas Operacionais (INF/UFRGS)
 | 14 					| 2 				| *blockSize*  				| 4  		 |
 | 16 			     	| 4 				| *diskSize*				| 32768 	 |
 | 20 até o final (255)  | - 				| *resevado*				| - 		 | 
+
+
+
+Segundo Trabalho da disciplina de Sistemas Operacionais (INF/UFRGS)
+
+| Função													| Implementada?		| Operacional?				|
+| --------------------------------------------------------- |:-----------------:| ------------------------- |
+| `int identify2 (char *name,int size)`						| *SIM*				| *SIM* 					|
+| `FILE2 create2 (char *filename)`							| *---*				| *---* 					|
+| `int delete2 (char *filename)`							| *---*				| *---* 					|
+| `FILE2 open2 (char *filename)`							| *SIM*				| *SIM* 					|
+| `int close2 (FILE2 handle)` 								| *SIM*				| *SIM* 					|
+| `int read2 (FILE2 handle, char *buffer, int size)`		| *---*				| *---* 					|
+| `int write2 (FILE2 handle, char *buffer, int size)`		| *---*				| *---* 					|
+| `int truncate2 (FILE2 handle)`							| *---*				| *---* 					|
+| `int seek2 (FILE2 handle, unsigned int offset)`			| *---*				| *---* 					|
+| `int mkdir2 (char *pathname)`								| *---*				| *---* 					|
+| `int rmdir2 (char *pathname)`								| *---*				| *---* 					|
+| `int chdir2(char *pathname)`								| *---*				| *---* 					|
+| `int getcwd2 (char *pathname, int size)`					| *---*				| *---* 					|
+| `DIR2 opendir2 (char *pathname)`							| *SIM*				| *SIM* 					|
+| `int readdir2 (DIR2 handle, DIRENT2 *dentry)`				| *---*				| *---* 					|
+| `int closedir2 (DIR2 handle) `							| *SIM*				| *SIM* 					|
+
