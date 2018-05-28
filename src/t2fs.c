@@ -282,7 +282,7 @@ void debug_main(){
 		print_record(FILES[2].record_info);
 	}
 
-		/*
+	/*
 	******************************************************
 		Testes CLOSEDIR2
 	******************************************************
@@ -298,6 +298,32 @@ void debug_main(){
 	}
 	if (closedir2(2) == SUCCESS){
 		print_record(DIRECTORIES[2].record_info);
+	}
+
+	/*
+	******************************************************
+		Testes CHDIR2
+	******************************************************
+	*/
+
+	printf("\n\n\n[>>>>>>>CHDIR2<<<<<<<<]\n");
+
+	char dir2[59] = "dir2";
+
+	if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
+		printf("[get_i_node] I-node de trabalho é o i-node 0 (raiz).\n\n");
+
+	if (chdir2(dir2) == SUCCESS){
+		read_i_node_content(CURRENT_I_NODE);
+	}
+
+	char dir2_2[59] = "/dir2";
+
+	if (get_i_node(5, CURRENT_I_NODE) == SUCCESS)
+		printf("[get_i_node] I-node de trabalho é o i-node 5c.\n\n");
+
+	if (chdir2(dir2_2) == SUCCESS){
+		read_i_node_content(CURRENT_I_NODE);
 	}
 
 }
@@ -582,7 +608,34 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int chdir2 (char *pathname){
 
+	struct t2fs_inode *work_directory;
+	struct t2fs_record *file_record = malloc(sizeof(struct t2fs_record));
+	struct t2fs_inode *work_inode = malloc(sizeof(struct t2fs_inode));
 
+	if (pathname[0] == '/'){
+		work_directory = ROOT_I_NODE;
+	}
+	else {
+		work_directory = CURRENT_I_NODE;
+	}
+
+	file_record = find_directory(work_directory, pathname);
+
+	if (file_record->inodeNumber != ERROR){
+
+		if (get_i_node(file_record->inodeNumber, work_inode) == SUCCESS){
+			// read_i_node_content(work_inode);
+			get_i_node(file_record->inodeNumber, CURRENT_I_NODE);
+			// read_i_node_content(CURRENT_I_NODE);
+			return SUCCESS;
+		}
+
+		printf("ERROR: Erro na leitura do i-node.\n");
+		return ERROR;
+	}
+
+
+	printf("ERROR: Diretório não encontrado.\n");
 	return ERROR;
 }
 

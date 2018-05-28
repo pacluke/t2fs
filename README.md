@@ -19,7 +19,7 @@ Segundo Trabalho da disciplina de Sistemas Operacionais (INF/UFRGS)
 Segundo Trabalho da disciplina de Sistemas Operacionais (INF/UFRGS)
 
 | Função													| Implementada?		| Operacional?				|
-| --------------------------------------------------------- |:-----------------:| ------------------------- |
+| --------------------------------------------------------- |:-----------------:|:-------------------------:|
 | `int identify2 (char *name,int size)`						| *SIM*				| *SIM* 					|
 | `FILE2 create2 (char *filename)`							| *---*				| *---* 					|
 | `int delete2 (char *filename)`							| *---*				| *---* 					|

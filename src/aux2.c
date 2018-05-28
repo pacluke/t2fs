@@ -405,5 +405,12 @@ struct t2fs_record *find_directory(struct t2fs_inode *dir_inode, char* dir_name)
 }
 
 
+// char *root_to_current(char *current_dir){
+
+	
+
+// }
+
+
 
 
