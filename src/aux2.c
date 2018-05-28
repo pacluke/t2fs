@@ -404,12 +404,37 @@ struct t2fs_record *find_directory(struct t2fs_inode *dir_inode, char* dir_name)
 	return directory;
 }
 
+char *concat_dirs(char *dir1, char *dir2){
 
-// char *root_to_current(char *current_dir){
+	char *final_string = malloc(sizeof(char)*(strlen(dir1) + strlen(dir2) + 2));
 
-	
+	strcat(final_string, dir1);
+	strcat(final_string, "/");
+	strcat(final_string, dir2);
 
-// }
+	return final_string;
+}
+
+
+char *root_to_current(char *current_dir_name, struct t2fs_inode *work_inode){
+
+	struct t2fs_record *aux_record = malloc(sizeof(struct t2fs_record));
+	struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
+
+	char *father = "..";
+
+	aux_record = find_directory(work_inode, father);
+
+	while(aux_record->inodeNumber != 0){
+		print_record(aux_record);
+		get_i_node(aux_record->inodeNumber, aux_inode);
+		aux_record = find_directory(aux_inode, father);
+	}
+
+	print_record(aux_record);
+
+	return father;
+}
 
 
 

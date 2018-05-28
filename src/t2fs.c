@@ -192,7 +192,7 @@ void debug_main(){
 	printf("INODE NUMBER OF dir21: %d\n\n", aux->inodeNumber);
 	print_record(aux);
 
-	// init_records_list();
+	init_records_list();
 
 	// int inode_value = 1;
 
@@ -245,7 +245,7 @@ void debug_main(){
 
 	printf("\n\n\n[>>>>>>>OPENDIR2<<<<<<<<]\n");
 
-	char path111[59] = "/dir2/dir21/";
+	char path111[59] = "/dir1/dir11/";
 	char path112[59] = "dir21";
 	// char path113[59] = "/file3";
 
@@ -320,11 +320,25 @@ void debug_main(){
 	char dir2_2[59] = "/dir2";
 
 	if (get_i_node(5, CURRENT_I_NODE) == SUCCESS)
-		printf("[get_i_node] I-node de trabalho é o i-node 5c.\n\n");
+		printf("[get_i_node] I-node de trabalho é o i-node 5.\n\n");
 
 	if (chdir2(dir2_2) == SUCCESS){
 		read_i_node_content(CURRENT_I_NODE);
 	}
+
+		
+	/********************************************************/
+
+	if (get_i_node(5, CURRENT_I_NODE) == SUCCESS)
+		printf("[get_i_node] I-node de trabalho é o i-node 5.\n\n");
+
+	read_i_node_content(CURRENT_I_NODE);
+
+	root_to_current("dir21", CURRENT_I_NODE);
+
+
+	// char *cat_dir = concat_dirs("/dir1", "dir2");
+	// printf("%s\n", cat_dir);
 
 }
 
