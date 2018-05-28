@@ -134,4 +134,4 @@ int read_i_node_content(struct t2fs_inode *dir);
 char *head_dir(char *path);
 char *tail_dir(char *path);
 struct t2fs_record *find_file(struct t2fs_inode *dir_inode, char* filename);
-struct t2fs_record *find_directory(struct t2fs_inode *dir_inode, char* filename);
+struct t2fs_record *find_directory(struct t2fs_inode *dir_inode, char* dir_name);
