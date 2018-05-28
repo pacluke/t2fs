@@ -31,7 +31,7 @@ Segundo Trabalho da disciplina de Sistemas Operacionais (INF/UFRGS)
 | `int seek2 (FILE2 handle, unsigned int offset)`			| *---*				| *---* 					|
 | `int mkdir2 (char *pathname)`								| *---*				| *---* 					|
 | `int rmdir2 (char *pathname)`								| *---*				| *---* 					|
-| `int chdir2(char *pathname)`								| *---*				| *---* 					|
+| `int chdir2(char *pathname)`								| *SIM*				| *SIM* 					|
 | `int getcwd2 (char *pathname, int size)`					| *---*				| *---* 					|
 | `DIR2 opendir2 (char *pathname)`							| *SIM*				| *SIM* 					|
 | `int readdir2 (DIR2 handle, DIRENT2 *dentry)`				| *---*				| *---* 					|
