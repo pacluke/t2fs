@@ -45,10 +45,12 @@ int init_records_list(){
 	{
 		FILES[i].record_info = malloc(sizeof(struct t2fs_record));
 		FILES[i].record_info->TypeVal = TYPEVAL_INVALIDO;
+		FILES[i].record_info->inodeNumber = -1;
 		FILES[i].seek_pointer = 0;
 
 		DIRECTORIES[i].record_info = malloc(sizeof(struct t2fs_record));
 		DIRECTORIES[i].record_info->TypeVal = TYPEVAL_INVALIDO;
+		DIRECTORIES[i].record_info->inodeNumber = -1;
 		DIRECTORIES[i].seek_pointer = -1;
 	}
 
@@ -276,7 +278,7 @@ char *tail_dir(char *path){
 	return tail;
 }
 
-int find_file(struct t2fs_inode *dir_inode, char* filename){
+struct t2fs_record *find_file(struct t2fs_inode *dir_inode, char* filename){
 
 	struct t2fs_record *file;
 	char *name = head_dir(filename);
@@ -292,14 +294,13 @@ int find_file(struct t2fs_inode *dir_inode, char* filename){
 			for (int i = 0; i < MAX_RECORDS; ++i){
 				memcpy(file, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
 				if(file->TypeVal == TYPEVAL_REGULAR && (strcmp(name, file->name) == SUCCESS)){
-					return file->inodeNumber;
+					return file;
 				}
 				else if (file->TypeVal == TYPEVAL_DIRETORIO && (strcmp(name, file->name) == SUCCESS)){
 					char *tail = tail_dir(filename);
 					if (tail != NULL){
 						struct t2fs_inode *next_inode;
 						next_inode = (struct t2fs_inode *) malloc(sizeof(struct t2fs_inode));
-						// printf("INODE NUMBER DO PROXIMO DIRETORIO: %d\n", file->inodeNumber);
 						if (get_i_node(file->inodeNumber, next_inode) == SUCCESS){
 							return find_file(next_inode, tail_dir(filename));
 						}
@@ -308,29 +309,31 @@ int find_file(struct t2fs_inode *dir_inode, char* filename){
 			}
 		}
 		else {
-			return ERROR;
+			file->inodeNumber = ERROR;
+			return file;
 		}
 	}
-	if(dir_inode->blocksFileSize > 1){
-		if (load_block(dir_inode->dataPtr[1]) == SUCCESS){
-			if(file->TypeVal == TYPEVAL_REGULAR && (strcmp(name, file->name) == SUCCESS)){
-				for(int i = 0; i < MAX_RECORDS; i++) {
-					memcpy(file, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
-					print_record(file);
-				}
-			}
-		}
-		else {
-			return ERROR;
-		}
-	}
-	if(dir_inode->blocksFileSize > 2){
-		printf("TODO >>> INDIRECT READING\n");
-	}
-	return ERROR;
+	// if(dir_inode->blocksFileSize > 1){
+	// 	if (load_block(dir_inode->dataPtr[1]) == SUCCESS){
+	// 		if(file->TypeVal == TYPEVAL_REGULAR && (strcmp(name, file->name) == SUCCESS)){
+	// 			for(int i = 0; i < MAX_RECORDS; i++) {
+	// 				memcpy(file, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
+	// 				print_record(file);
+	// 			}
+	// 		}
+	// 	}
+	// 	else {
+	// 		return ERROR;
+	// 	}
+	// }
+	// if(dir_inode->blocksFileSize > 2){
+	// 	printf("TODO >>> INDIRECT READING\n");
+	// }
+	file->inodeNumber = ERROR;
+	return file;
 }
 
-int find_directory(struct t2fs_inode *dir_inode, char* dir_name){
+struct t2fs_record *find_directory(struct t2fs_inode *dir_inode, char* dir_name){
 
 	struct t2fs_record *directory;
 	char *name = head_dir(dir_name);
@@ -345,42 +348,46 @@ int find_directory(struct t2fs_inode *dir_inode, char* dir_name){
 		if (load_block(dir_inode->dataPtr[0]) == SUCCESS){
 			for (int i = 0; i < MAX_RECORDS; ++i){
 				memcpy(directory, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
-				if(directory->TypeVal == TYPEVAL_DIRETORIO && (strcmp(name, directory->name) == SUCCESS)){
-					return directory->inodeNumber;
+				if(directory->TypeVal == TYPEVAL_DIRETORIO && (strcmp(name, directory->name) == SUCCESS) && (tail_dir(dir_name) == NULL)){
+					return directory;
 				}
+
+
 				else if (directory->TypeVal == TYPEVAL_DIRETORIO && (strcmp(name, directory->name) == SUCCESS)){
 					char *tail = tail_dir(dir_name);
 					if (tail != NULL){
 						struct t2fs_inode *next_inode;
 						next_inode = (struct t2fs_inode *) malloc(sizeof(struct t2fs_inode));
 						if (get_i_node(directory->inodeNumber, next_inode) == SUCCESS){
-							return find_file(next_inode, tail_dir(dir_name));
+							return find_directory(next_inode, tail_dir(dir_name));
 						}
 					}
 				}
 			}
 		}
 		else {
-			return ERROR;
+			directory->inodeNumber = ERROR;
+			return directory;
 		}
 	}
-	if(dir_inode->blocksFileSize > 1){
-		if (load_block(dir_inode->dataPtr[1]) == SUCCESS){
-			if(directory->TypeVal == TYPEVAL_REGULAR && (strcmp(name, directory->name) == SUCCESS)){
-				for(int i = 0; i < MAX_RECORDS; i++) {
-					memcpy(directory, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
-					// print_record(directory);
-				}
-			}
-		}
-		else {
-			return ERROR;
-		}
-	}
-	if(dir_inode->blocksFileSize > 2){
-		printf("TODO >>> INDIRECT READING\n");
-	}
-	return ERROR;
+	// if(dir_inode->blocksFileSize > 1){
+	// 	if (load_block(dir_inode->dataPtr[1]) == SUCCESS){
+	// 		if(directory->TypeVal == TYPEVAL_REGULAR && (strcmp(name, directory->name) == SUCCESS)){
+	// 			for(int i = 0; i < MAX_RECORDS; i++) {
+	// 				memcpy(directory, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
+	// 				// print_record(directory);
+	// 			}
+	// 		}
+	// 	}
+	// 	else {
+	// 		return ERROR;
+	// 	}
+	// }
+	// if(dir_inode->blocksFileSize > 2){
+	// 	printf("TODO >>> INDIRECT READING\n");
+	// }
+	directory->inodeNumber = ERROR;
+	return directory;
 }
 
 

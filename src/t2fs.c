@@ -164,32 +164,33 @@ void debug_main(){
 	// 	hd01 = tail_dir(hd01);
 	// }
 
-	int file3_inode_number;
+	struct t2fs_record *aux = malloc(sizeof(struct t2fs_record));
+
 	char filename[59] = "/file3";
-	file3_inode_number = find_file(CURRENT_I_NODE, filename);
-	printf("INODE NUMBER OF FILE3: %d\n\n", file3_inode_number);
+	aux = find_file(CURRENT_I_NODE, filename);
+	printf("INODE NUMBER OF FILE3: %d\n\n", aux->inodeNumber);
+	print_record(aux);
 
 	// read_i_node_content(CURRENT_I_NODE);
 
 	// print_i_node(CURRENT_I_NODE);
 
-	int file111_inode_number;
-	char filename111[59] = "/dir2/dir21/file211";
-	if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
-		printf("[get_i_node] I-node de trabalho é o nodo raiz.\n\n");
-	file111_inode_number = find_file(CURRENT_I_NODE, filename111);
-	printf("INODE NUMBER OF file221: %d\n\n", file111_inode_number);
-
-	int dir1_inode_number;
+	// int file111_inode_number;
+	// char filename111[59] = "/dir2/dir21/file211";
+	// if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
+	// 	printf("[get_i_node] I-node de trabalho é o nodo raiz.\n\n");
+	// file111_inode_number = find_file(CURRENT_I_NODE, filename111, aux);
+	// printf("INODE NUMBER OF file221: %d\n\n", file111_inode_number);
+	// print_record(aux);
 
 	char filenamedir1[59] = "/dir2/dir21";
 
 	if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
 		printf("[get_i_node] I-node de trabalho é o nodo raiz.\n\n");
 
-	dir1_inode_number = find_directory(CURRENT_I_NODE, filenamedir1);
-
-	printf("INODE NUMBER OF dir21: %d\n\n", dir1_inode_number);
+	aux = find_directory(CURRENT_I_NODE, filenamedir1);
+	printf("INODE NUMBER OF dir21: %d\n\n", aux->inodeNumber);
+	print_record(aux);
 
 	// init_records_list();
 
@@ -202,6 +203,8 @@ void debug_main(){
 	// 		printf("[get_i_node] I-node de trabalho é o node %d.\n\n", inode_value);
 	// 	read_i_node_content(CURRENT_I_NODE);
 	// }
+
+	// open2(filename111);
 
 }
 
@@ -285,7 +288,44 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna o handle d
 -----------------------------------------------------------------------------*/
 FILE2 open2 (char *filename){
 
+	// struct t2fs_inode *work_directory;
+	// int file_inode;
+	// int handle = -10;
 
+	// if (filename[0] == '/'){
+	// 	work_directory = ROOT_I_NODE;
+	// }
+	// else {
+	// 	work_directory = CURRENT_I_NODE;
+	// }
+
+	// file_inode = find_file(work_directory, filename);
+
+	// if (file_inode >= 0){
+	// 	for (int i = 0; i < 10; ++i){
+	// 		if (FILES[i].record_info->TypeVal == TYPEVAL_REGULAR &&
+	// 			FILES[i].record_info->inodeNumber == file_inode){
+	// 			handle = i;
+	// 			return handle;
+	// 		}
+	// 		else if (handle == -10 && 
+	// 			FILES[i].record_info->TypeVal == TYPEVAL_INVALIDO){
+	// 			handle = i;
+	// 		}
+	// 	}
+
+	// 	if (handle > 0){
+	// 		// FILES[handle].
+
+	// 	}
+
+	// 	else {
+	// 		printf("ERRO: Maximo de arquivos abertos atingido.\n");
+	// 		return ERROR;
+	// 	}
+
+	// }
+	printf("ERRO: Arquivo não encontrado.\n");
 	return ERROR;
 }
 
