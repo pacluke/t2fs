@@ -210,35 +210,40 @@ void debug_main(){
 	******************************************************
 	*/
 
+	printf("\n\n\n[>>>>>>>OPEN2<<<<<<<<]\n");
+
 	char filename111[59] = "/dir2/dir21/file211";
 	char filename112[59] = "dir21/file211";
 	char filename113[59] = "file3";
 
 	printf("[open2] tentando abrir %s\n", filename111);
-	int file_hande = open2(filename111);
-	printf("HANDLE: %d\n", file_hande);
-	print_record(FILES[file_hande].record_info);
+	int file_handle = open2(filename111);
+	printf("HANDLE: %d\n", file_handle);
+	print_record(FILES[file_handle].record_info);
 
 	if (get_i_node(4, CURRENT_I_NODE) == SUCCESS)
 		printf("[get_i_node] I-node de trabalho é o i-node 4.\n\n");
 
 	printf("[open2] tentando abrir %s\n", filename112);
-	file_hande = open2(filename112);
-	printf("HANDLE: %d\n", file_hande);
-	print_record(FILES[file_hande].record_info);
+	file_handle = open2(filename112);
+	printf("HANDLE: %d\n", file_handle);
+	print_record(FILES[file_handle].record_info);
 
 	if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
 		printf("[get_i_node] I-node de trabalho é o i-node 5.\n\n");
 
 	printf("[open2] tentando abrir %s\n", filename113);
-	file_hande = open2(filename113);
-	print_record(FILES[file_hande].record_info);
+	file_handle = open2(filename113);
+	printf("HANDLE: %d\n", file_handle);
+	print_record(FILES[file_handle].record_info);
 
-		/*
+	/*
 	******************************************************
 		Testes OPENDIR2
 	******************************************************
 	*/
+
+	printf("\n\n\n[>>>>>>>OPENDIR2<<<<<<<<]\n");
 
 	char path111[59] = "/dir2/dir21/";
 	char path112[59] = "dir21";
@@ -257,6 +262,43 @@ void debug_main(){
 	dir_handle = opendir2(path112);
 	printf("HANDLE: %d\n", dir_handle);
 	print_record(DIRECTORIES[dir_handle].record_info);
+
+
+	/*
+	******************************************************
+		Testes CLOSE2
+	******************************************************
+	*/
+	
+	printf("\n\n\n[>>>>>>>CLOSE2<<<<<<<<]\n");
+
+	if (close2(0) == SUCCESS){
+		print_record(FILES[0].record_info);
+	}
+	if (close2(1) == SUCCESS){
+		print_record(FILES[1].record_info);
+	}
+	if (close2(2) == SUCCESS){
+		print_record(FILES[2].record_info);
+	}
+
+		/*
+	******************************************************
+		Testes CLOSEDIR2
+	******************************************************
+	*/
+
+	printf("\n\n\n[>>>>>>>CLOSEDIR2<<<<<<<<]\n");
+
+	if (closedir2(0) == SUCCESS){
+		print_record(DIRECTORIES[0].record_info);
+	}
+	if (closedir2(1) == SUCCESS){
+		print_record(DIRECTORIES[1].record_info);
+	}
+	if (closedir2(2) == SUCCESS){
+		print_record(DIRECTORIES[2].record_info);
+	}
 
 }
 
@@ -396,6 +438,13 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int close2 (FILE2 handle){
 
+	if (FILES[handle].record_info->TypeVal == TYPEVAL_REGULAR){
+		FILES[handle].record_info->TypeVal = TYPEVAL_INVALIDO;
+		FILES[handle].record_info->inodeNumber = -1;
+		strcpy(FILES[handle].record_info->name, "indef");
+		FILES[handle].seek_pointer = 0;
+		return SUCCESS;
+	}
 
 	return ERROR;
 }
@@ -591,7 +640,7 @@ DIR2 opendir2 (char *pathname){
 
 	if (file_record->inodeNumber != ERROR){
 		for (int i = 0; i < 10; ++i){
-			if (DIRECTORIES[i].record_info->TypeVal == TYPEVAL_REGULAR &&
+			if (DIRECTORIES[i].record_info->TypeVal == TYPEVAL_DIRETORIO &&
 				DIRECTORIES[i].record_info->inodeNumber == file_record->inodeNumber){
 				handle = i;
 
@@ -655,6 +704,13 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int closedir2 (DIR2 handle){
 
+	if (DIRECTORIES[handle].record_info->TypeVal == TYPEVAL_DIRETORIO){
+		DIRECTORIES[handle].record_info->TypeVal = TYPEVAL_INVALIDO;
+		DIRECTORIES[handle].record_info->inodeNumber = -1;
+		strcpy(DIRECTORIES[handle].record_info->name, "indef");
+		DIRECTORIES[handle].seek_pointer = 0;
+		return SUCCESS;
+	}
 
 	return ERROR;
 }

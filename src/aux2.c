@@ -46,11 +46,13 @@ int init_records_list(){
 		FILES[i].record_info = malloc(sizeof(struct t2fs_record));
 		FILES[i].record_info->TypeVal = TYPEVAL_INVALIDO;
 		FILES[i].record_info->inodeNumber = -1;
+		strcpy(FILES[i].record_info->name, "indef");
 		FILES[i].seek_pointer = 0;
 
 		DIRECTORIES[i].record_info = malloc(sizeof(struct t2fs_record));
 		DIRECTORIES[i].record_info->TypeVal = TYPEVAL_INVALIDO;
 		DIRECTORIES[i].record_info->inodeNumber = -1;
+		strcpy(DIRECTORIES[i].record_info->name, "indef");
 		DIRECTORIES[i].seek_pointer = -1;
 	}
 
