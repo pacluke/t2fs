@@ -57,6 +57,11 @@ typedef struct {
     DWORD   fileSize;                   /* Numero de bytes do arquivo                          */
 } DIRENT2;
 
+/** Registro com as informações dos arquivos abertos */
+typedef struct {
+	struct t2fs_record *record_info; /* Registro de diretório (entrada de diretório) */
+	int seek_pointer;				/* Indica pra onde o seek aponta caso seja um arquivo, e se for um diretório vale -1 */
+} RECORDS_HANDLE;
 
 #pragma pack(pop)
 

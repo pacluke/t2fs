@@ -37,10 +37,21 @@ int init_current_i_node(){
 }
 
 int init_records_list(){
-	for (int i = 0; i < 100; ++i)
+
+	FILES = malloc(sizeof(RECORDS_HANDLE) * 10);
+	DIRECTORIES = malloc(sizeof(RECORDS_HANDLE) * 10);
+
+	for (int i = 0; i < 10; ++i)
 	{
-		RECORDS[i].TypeVal = TYPEVAL_INVALIDO;
+		FILES[i].record_info = malloc(sizeof(struct t2fs_record));
+		FILES[i].record_info->TypeVal = TYPEVAL_INVALIDO;
+		FILES[i].seek_pointer = 0;
+
+		DIRECTORIES[i].record_info = malloc(sizeof(struct t2fs_record));
+		DIRECTORIES[i].record_info->TypeVal = TYPEVAL_INVALIDO;
+		DIRECTORIES[i].seek_pointer = -1;
 	}
+
 	return SUCCESS;
 }
 
@@ -118,23 +129,23 @@ int load_block(int block){
 	unsigned char buffer[SECTOR_SIZE];
 	int sectors = (block * SUPERBLOCK->blockSize);
 
-	if(read_sector(sectors, buffer) == 0)
-		memcpy(&CURRENT_BLOCK[0], &buffer[0], SECTOR_SIZE);
+	if(read_sector(sectors, buffer) == SUCCESS)
+		memcpy(&CURRENT_BLOCK[0], &buffer, SECTOR_SIZE);
 	else 
 		return ERROR;
 
-	if(read_sector (sectors+1, buffer) == 0)
-		memcpy(&CURRENT_BLOCK[SECTOR_SIZE*1], &buffer[0],SECTOR_SIZE);
+	if(read_sector (sectors+1, buffer) == SUCCESS)
+		memcpy(&CURRENT_BLOCK[SECTOR_SIZE*1], &buffer,SECTOR_SIZE);
 	else 
 		return ERROR;
 
-	if(read_sector (sectors+2, buffer) == 0)
-		memcpy(&CURRENT_BLOCK[SECTOR_SIZE*2], &buffer[0],SECTOR_SIZE);
+	if(read_sector (sectors+2, buffer) == SUCCESS)
+		memcpy(&CURRENT_BLOCK[SECTOR_SIZE*2], &buffer,SECTOR_SIZE);
 	else 
 		return ERROR;
 
-	if(read_sector (sectors+3, buffer) == 0)
-		memcpy(&CURRENT_BLOCK[SECTOR_SIZE*3], &buffer[0],SECTOR_SIZE);
+	if(read_sector (sectors+3, buffer) == SUCCESS)
+		memcpy(&CURRENT_BLOCK[SECTOR_SIZE*3], &buffer,SECTOR_SIZE);
 	else 
 		return ERROR;
 
@@ -143,7 +154,7 @@ int load_block(int block){
 
 int get_i_node(int i_node_n, struct t2fs_inode *i_node){
 
-	int position = i_node_n*(SUPERBLOCK->inodeAreaSize);
+	int position = i_node_n*(32);
 	int inode_block = (SUPERBLOCK->superblockSize + SUPERBLOCK->freeBlocksBitmapSize + SUPERBLOCK->freeInodeBitmapSize);
 
 	if (load_block(inode_block) == SUCCESS){
@@ -152,7 +163,7 @@ int get_i_node(int i_node_n, struct t2fs_inode *i_node){
 				&CURRENT_BLOCK[position+BLOCKS_FILE_SIZE_OFFSET], BLOCKS_FILE_SIZE);
 
 			memcpy(&(i_node->bytesFileSize),
-				&CURRENT_BLOCK[position+BYTES_FILE_SIZE_OFFSET], 	BYTES_FILE_SIZE);
+				&CURRENT_BLOCK[position+BYTES_FILE_SIZE_OFFSET], BYTES_FILE_SIZE);
 
 			memcpy(&(i_node->dataPtr[0]),
 				&CURRENT_BLOCK[position+(DATA_POINTER_OFFSET)], (DATA_POINTER/2));

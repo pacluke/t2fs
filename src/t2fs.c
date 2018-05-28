@@ -108,12 +108,12 @@ struct t2fs_inode *CURRENT_I_NODE;
 struct t2fs_inode *ROOT_I_NODE;
 /* ------------------------ */
 
-/* I-NODE RAIZ */
-struct t2fs_inode *ROOT_I_NODE;
+/* LISTA DE ARQUIVOS (HANDLE) */
+RECORDS_HANDLE *FILES;
 /* ------------------------ */
 
-/* LISTA DE ARQUIVOS (HANDLE) */
-struct t2fs_record RECORDS[255];
+/* LISTA DE DIRETORIOS (HANDLE) */
+RECORDS_HANDLE *DIRECTORIES;
 /* ------------------------ */
 
 
@@ -125,20 +125,23 @@ void debug_main(){
 	printf("\n\n..:: INFO SOBRE O SUEPRBLOCO ::..\n\n");
 	print_superblock();
 	printf("\n");
+	init_records_list();
 
 	// if (load_block(3) == SUCCESS)
 	// 	printf("[load_block] Carregamento do bloco 3 realizado com sucesso.\n\n");
 
 	if (get_i_node(0, ROOT_I_NODE) == SUCCESS)
 		printf("[get_i_node] I-node raiz é o 0 do bloco 3.\n\n");
+
 	if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
 		printf("[get_i_node] I-node de trabalho é o nodo raiz.\n\n");
 
-	printf("[read_i_node_content] Esse é o conteúdo do i-node raíz: \n\n");
 
-	read_i_node_content(CURRENT_I_NODE);
+	// printf("[read_i_node_content] Esse é o conteúdo do i-node raíz: \n\n");
 
-	init_records_list();
+	// read_i_node_content(CURRENT_I_NODE);
+
+	
 
 	// char pathname01[200] = "/dir0/dir1/dir2/dir3/dir4/dir5/dir6/dir7/dir8/dir9/dir10/dir11/dir12/dir13/dir14/file";
 	// char pathname02[59] = "dir1/dir2/dir3/dir4/file";
@@ -174,31 +177,33 @@ void debug_main(){
 	if (get_i_node(1, CURRENT_I_NODE) == SUCCESS)
 		printf("[get_i_node] I-node de trabalho é o node 1.\n\n");
 
-	read_i_node_content(CURRENT_I_NODE);
+	// read_i_node_content(CURRENT_I_NODE);
 
 	// print_i_node(CURRENT_I_NODE);
 
 	int file111_inode_number;
 
-	char filename111[59] = "/dir1/file111";
+	char filename111[59] = "/dir2/dir21/file211";
 
 	if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
 		printf("[get_i_node] I-node de trabalho é o nodo raiz.\n\n");
 
 	file111_inode_number = find_file(CURRENT_I_NODE, filename111);
 
-	printf("INODE NUMBER OF FILE111: %d\n", file111_inode_number);
+	printf("INODE NUMBER OF file221: %d\n", file111_inode_number);
 
-	int dir1_inode_number;
+	// int dir1_inode_number;
 
-	char filenamedir1[59] = "/dir1";
+	// char filenamedir1[59] = "/dir2/dir21/";
 
-	if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
-		printf("[get_i_node] I-node de trabalho é o nodo raiz.\n\n");
+	// if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
+	// 	printf("[get_i_node] I-node de trabalho é o nodo raiz.\n\n");
 
-	dir1_inode_number = find_directory(CURRENT_I_NODE, filenamedir1);
+	// dir1_inode_number = find_directory(CURRENT_I_NODE, filenamedir1);
 
-	printf("INODE NUMBER OF DIR1: %d\n", dir1_inode_number);
+	// printf("INODE NUMBER OF DIR1: %d\n", dir1_inode_number);
+
+	// init_records_list();
 
 	// int inode_value = 1;
 

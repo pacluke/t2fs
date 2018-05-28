@@ -111,7 +111,11 @@ extern struct t2fs_inode *ROOT_I_NODE;
 /* ------------------------ */
 
 /* LISTA DE ARQUIVOS (HANDLE) */
-extern struct t2fs_record RECORDS[255];
+extern RECORDS_HANDLE *FILES;
+/* ------------------------ */
+
+/* LISTA DE DIRETORIOS (HANDLE) */
+extern RECORDS_HANDLE *DIRECTORIES;
 /* ------------------------ */
 
 int init_superblock();

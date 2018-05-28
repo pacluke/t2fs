@@ -1,0 +1,68 @@
+[init_all] Estruturas de dados iniciadas com sucesso e superbloco carregado.
+
+
+..:: INFO SOBRE O SUEPRBLOCO ::..
+
+LIBRARY ID:		 T2FS
+LIBRARY VERSION:	 0x7E21
+SUPERBLOCK SIZE:	 (hex) 1 	 (dec) 1
+FREE BLOCKS BITMAP SIZE: (hex) 1 	 (dec) 1
+FREE I-NODE BITMAP SIZE: (hex) 1 	 (dec) 1
+I-NODE AREA SIZE:	 (hex) 40 	 (dec) 64
+BLOCK SIZE:		 (hex) 4 	 (dec) 4
+DISK SIZE:		 (hex) 2000 	 (dec) 8192 BLOCKS or 32768 SECTORS
+
+
+[get_i_node] I-node raiz é o 0 do bloco 3.
+
+[get_i_node] I-node de trabalho é o nodo raiz.
+
+[read_i_node_content] Esse é o conteúdo do i-node raíz: 
+
+TYPE VALUE: 	0x02 (0x01 FILE, 0x02 DIR)
+NAME: 		.
+I-NODE NUMBER:  0
+
+TYPE VALUE: 	0x02 (0x01 FILE, 0x02 DIR)
+NAME: 		..
+I-NODE NUMBER:  0
+
+TYPE VALUE: 	0x02 (0x01 FILE, 0x02 DIR)
+NAME: 		dir1
+I-NODE NUMBER:  1
+
+TYPE VALUE: 	0x02 (0x01 FILE, 0x02 DIR)
+NAME: 		dir2
+I-NODE NUMBER:  4
+
+TYPE VALUE: 	0x01 (0x01 FILE, 0x02 DIR)
+NAME: 		file3
+I-NODE NUMBER:  12
+
+INODE NUMBER OF FILE3: 12
+
+[get_i_node] I-node de trabalho é o node 1.
+
+TYPE VALUE: 	0x02 (0x01 FILE, 0x02 DIR)
+NAME: 		.
+I-NODE NUMBER:  2
+
+TYPE VALUE: 	0x02 (0x01 FILE, 0x02 DIR)
+NAME: 		..
+I-NODE NUMBER:  1
+
+TYPE VALUE: 	0x01 (0x01 FILE, 0x02 DIR)
+NAME: 		file111
+I-NODE NUMBER:  6
+
+TYPE VALUE: 	0x01 (0x01 FILE, 0x02 DIR)
+NAME: 		file112
+I-NODE NUMBER:  7
+
+[get_i_node] I-node de trabalho é o nodo raiz.
+
+INODE NUMBER OF FILE111: 6
+[get_i_node] I-node de trabalho é o nodo raiz.
+
+INODE NUMBER OF DIR1: 1
+
