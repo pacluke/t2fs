@@ -329,16 +329,25 @@ void debug_main(){
 		
 	/********************************************************/
 
+
 	if (get_i_node(5, CURRENT_I_NODE) == SUCCESS)
 		printf("[get_i_node] I-node de trabalho é o i-node 5.\n\n");
 
 	read_i_node_content(CURRENT_I_NODE);
 
-	root_to_current("dir21", CURRENT_I_NODE);
+	printf("\n\n\n[>>>>>>>ROOT TO CURRENT<<<<<<<<]\n");
 
+	char *full_path = root_to_current("dir21", CURRENT_I_NODE);
 
-	// char *cat_dir = concat_dirs("/dir1", "dir2");
-	// printf("%s\n", cat_dir);
+	printf("FULL PATH OF dir21: %s\n\n\n", full_path);
+
+	/********************************************************/
+
+	// printf("\n\n\n[>>>>>>>GET RECORD BY INODE NUMBER<<<<<<<<]\n");
+
+	// struct t2fs_record *auxrecord = get_record_by_inode_number(ROOT_I_NODE, 1);
+
+	// print_record(auxrecord);
 
 }
 
