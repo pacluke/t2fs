@@ -211,6 +211,9 @@ void debug_main(){
 	*/
 
 	printf("\n\n\n[>>>>>>>IDENTIFY2<<<<<<<<]\n");
+	printf("[>>>>>>>IDENTIFY2<<<<<<<<]\n");
+	printf("[>>>>>>>IDENTIFY2<<<<<<<<]\n");
+	printf("\n\n\n");
 
 	char namesssss[255];
 
@@ -226,6 +229,9 @@ void debug_main(){
 	*/
 
 	printf("\n\n\n[>>>>>>>OPEN2<<<<<<<<]\n");
+	printf("[>>>>>>>OPEN2<<<<<<<<]\n");
+	printf("[>>>>>>>OPEN2<<<<<<<<]\n");
+	printf("\n\n\n");
 
 	char filename111[59] = "/dir2/dir21/file211";
 	char filename112[59] = "dir21/file211";
@@ -259,6 +265,9 @@ void debug_main(){
 	*/
 
 	printf("\n\n\n[>>>>>>>OPENDIR2<<<<<<<<]\n");
+	printf("[>>>>>>>OPENDIR2<<<<<<<<]\n");
+	printf("[>>>>>>>OPENDIR2<<<<<<<<]\n");
+	printf("\n\n\n");
 
 	char path111[59] = "/dir1/dir11/";
 	char path112[59] = "dir21";
@@ -286,6 +295,9 @@ void debug_main(){
 	*/
 	
 	printf("\n\n\n[>>>>>>>CLOSE2<<<<<<<<]\n");
+	printf("[>>>>>>>CLOSE2<<<<<<<<]\n");
+	printf("[>>>>>>>CLOSE2<<<<<<<<]\n");
+	printf("\n\n\n");
 
 	if (close2(0) == SUCCESS){
 		print_record(FILES[0].record_info);
@@ -304,6 +316,9 @@ void debug_main(){
 	*/
 
 	printf("\n\n\n[>>>>>>>CLOSEDIR2<<<<<<<<]\n");
+	printf("[>>>>>>>CLOSEDIR2<<<<<<<<]\n");
+	printf("[>>>>>>>CLOSEDIR2<<<<<<<<]\n");
+	printf("\n\n\n");
 
 	if (closedir2(0) == SUCCESS){
 		print_record(DIRECTORIES[0].record_info);
@@ -322,6 +337,9 @@ void debug_main(){
 	*/
 
 	printf("\n\n\n[>>>>>>>CHDIR2<<<<<<<<]\n");
+	printf("[>>>>>>>CHDIR2<<<<<<<<]\n");
+	printf("[>>>>>>>CHDIR2<<<<<<<<]\n");
+	printf("\n\n\n");
 
 	char dir2[59] = "dir2";
 
@@ -380,6 +398,9 @@ void debug_main(){
 	*/
 
 	printf("\n\n\n[>>>>>>>GETCWD2<<<<<<<<]\n");
+	printf("[>>>>>>>GETCWD2<<<<<<<<]\n");
+	printf("[>>>>>>>GETCWD2<<<<<<<<]\n");
+	printf("\n\n\n");
 
 	char churros[1024];
 
@@ -395,6 +416,76 @@ void debug_main(){
 	{
 		printf("O RESULTADO DE GETCWD2 FOI: %s\n", churros);
 	}
+
+	/*
+	******************************************************
+		Testes SEEK2
+	******************************************************
+	*/
+
+	printf("\n\n\n[>>>>>>>SEEK2<<<<<<<<]\n");
+	printf("[>>>>>>>SEEK2<<<<<<<<]\n");
+	printf("[>>>>>>>SEEK2<<<<<<<<]\n");
+	printf("\n\n\n");
+
+
+	if (get_i_node(4, CURRENT_I_NODE) == SUCCESS)
+		printf("[get_i_node] I-node de trabalho é o i-node 4.\n\n");
+
+	printf("[open2] tentando abrir %s\n", filename112);
+	file_handle = open2(filename112);
+	printf("HANDLE: %d\n", file_handle);
+	print_record(FILES[file_handle].record_info);
+
+	printf("[seek2] Offset agora vai ser 43.\n");
+
+	if (seek2(file_handle, 43) == SUCCESS){
+		printf("Offset do %s agora é %d\n", FILES[file_handle].record_info->name, FILES[file_handle].seek_pointer);
+	}
+
+	if (seek2(file_handle, 0) == SUCCESS){
+		printf("Offset do %s agora é %d\n", FILES[file_handle].record_info->name, FILES[file_handle].seek_pointer);
+	}
+
+	if (seek2(file_handle, -1) == SUCCESS){
+		printf("Offset do %s agora é %d\n", FILES[file_handle].record_info->name, FILES[file_handle].seek_pointer);
+	}
+
+	printf(".:Erro proposital:.\n");
+	if (seek2(file_handle, 1242) == SUCCESS){
+		printf("Offset do %s agora é %d\n", FILES[file_handle].record_info->name, FILES[file_handle].seek_pointer);
+	}
+
+	printf("\n\n\n");
+
+	if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
+		printf("[get_i_node] I-node de trabalho é o i-node 5.\n\n");
+
+	printf("[open2] tentando abrir %s\n", filename113);
+	file_handle = open2(filename113);
+	printf("HANDLE: %d\n", file_handle);
+	print_record(FILES[file_handle].record_info);
+
+	printf("[seek2] Offset agora vai ser 17.\n");
+
+	if (seek2(file_handle, 17) == SUCCESS){
+		printf("Offset do %s agora é %d\n", FILES[file_handle].record_info->name, FILES[file_handle].seek_pointer);
+	}
+
+	if (seek2(file_handle, 0) == SUCCESS){
+		printf("Offset do %s agora é %d\n", FILES[file_handle].record_info->name, FILES[file_handle].seek_pointer);
+	}
+
+	if (seek2(file_handle, -1) == SUCCESS){
+		printf("Offset do %s agora é %d\n", FILES[file_handle].record_info->name, FILES[file_handle].seek_pointer);
+	}
+
+	printf(".:Erro proposital:.\n");
+	if (seek2(file_handle, 1242) == SUCCESS){
+		printf("Offset do %s agora é %d\n", FILES[file_handle].record_info->name, FILES[file_handle].seek_pointer);
+	}
+
+	printf("\n\n\n");
 
 }
 
@@ -618,7 +709,34 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int seek2 (FILE2 handle, DWORD offset){
 
+	if (handle < 0 || handle > 10){
+		printf("ERROR: Handle inválido.\n");
+		return ERROR;
+	}
 
+	if (FILES[handle].record_info->TypeVal == TYPEVAL_INVALIDO){
+		printf("ERROR: Arquivo inválido.\n");
+		return ERROR;
+	}
+
+	struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
+
+	if (get_i_node(FILES[handle].record_info->inodeNumber, aux_inode) == SUCCESS){
+		if (offset == -1){
+			FILES[handle].seek_pointer = aux_inode->bytesFileSize + 1;
+			return SUCCESS;
+		}
+
+		else if(offset > aux_inode->bytesFileSize){
+			printf("ERROR: Offset inválido.\n");
+			return ERROR;
+		}
+
+		FILES[handle].seek_pointer = offset;
+		return SUCCESS;
+	}
+
+	printf("ERROR: Erro na leitura do i-node.\n");
 	return ERROR;
 }
 
