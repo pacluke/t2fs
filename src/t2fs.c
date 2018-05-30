@@ -364,6 +364,21 @@ void debug_main(){
 
 	// print_record(auxrecord);
 
+	/*
+	******************************************************
+		Testes GETCWD2
+	******************************************************
+	*/
+
+	printf("\n\n\n[>>>>>>>GETCWD2<<<<<<<<]\n");
+
+	char churros[1024];
+
+	if (getcwd2(churros, 1024) == SUCCESS)
+	{
+		printf("O RESULTADO DE GETCWD2 FOI: %s\n", churros);
+	}
+
 }
 
 /*-----------------------------------------------------------------------------
@@ -694,8 +709,16 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int getcwd2 (char *pathname, int size){
 
+	char *temp_path = root_to_current(CURRENT_I_NODE);
 
-	return ERROR;
+	if (strlen(temp_path) > size){
+		printf("ERROR: Espaço insuficiente no buffer pathname.\n");
+		return ERROR;
+	}
+
+	strcpy(pathname, temp_path);
+
+	return SUCCESS;
 }
 
 
