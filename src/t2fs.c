@@ -329,15 +329,24 @@ void debug_main(){
 		printf("[get_i_node] I-node de trabalho é o i-node 0 (raiz).\n\n");
 
 	if (chdir2(dir2) == SUCCESS){
+		printf("CHDIR2 -> %s\n", dir2);
 		read_i_node_content(CURRENT_I_NODE);
 	}
 
-	char dir2_2[59] = "/dir2";
+	char dir2_2[59] = "/dir2/dir21";
 
 	if (get_i_node(5, CURRENT_I_NODE) == SUCCESS)
 		printf("[get_i_node] I-node de trabalho é o i-node 5.\n\n");
 
 	if (chdir2(dir2_2) == SUCCESS){
+		printf("CHDIR2 -> %s\n", dir2_2);
+		read_i_node_content(CURRENT_I_NODE);
+	}
+
+	char dir_root[59] = "/";
+
+	if (chdir2(dir_root) == SUCCESS){
+		printf("CHDIR2 -> %s\n", dir_root);
 		read_i_node_content(CURRENT_I_NODE);
 	}
 
@@ -373,6 +382,14 @@ void debug_main(){
 	printf("\n\n\n[>>>>>>>GETCWD2<<<<<<<<]\n");
 
 	char churros[1024];
+
+	if (getcwd2(churros, 1024) == SUCCESS)
+	{
+		printf("O RESULTADO DE GETCWD2 FOI: %s\n", churros);
+	}
+
+	if (get_i_node(0, CURRENT_I_NODE))
+		printf("[get_i_node] I-node de trabalho é o i-node 0.\n\n");
 
 	if (getcwd2(churros, 1024) == SUCCESS)
 	{
@@ -665,6 +682,18 @@ int chdir2 (char *pathname){
 	struct t2fs_record *file_record = malloc(sizeof(struct t2fs_record));
 	struct t2fs_inode *work_inode = malloc(sizeof(struct t2fs_inode));
 
+	char root[] = "/";
+
+	if (strcmp(pathname, root) == SUCCESS){
+		if (get_i_node(file_record->inodeNumber, CURRENT_I_NODE) == SUCCESS){
+			return SUCCESS;
+		}
+		else {
+			printf("ERROR: Erro na leitura do i-node.\n");
+			return ERROR;
+		}
+	}
+
 	if (pathname[0] == '/'){
 		work_directory = ROOT_I_NODE;
 	}
@@ -708,6 +737,18 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 		Em caso de erro, será retornado um valor diferente de zero.
 -----------------------------------------------------------------------------*/
 int getcwd2 (char *pathname, int size){
+
+	char root[] = "/";
+
+	if (CURRENT_I_NODE == ROOT_I_NODE){
+		if (strlen(root) > size){
+			printf("ERROR: Espaço insuficiente no buffer pathname.\n");
+			return ERROR;
+		}
+
+		strcpy(pathname, root);
+		return SUCCESS;
+	}
 
 	char *temp_path = root_to_current(CURRENT_I_NODE);
 
