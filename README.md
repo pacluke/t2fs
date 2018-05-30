@@ -28,7 +28,7 @@ Segundo Trabalho da disciplina de Sistemas Operacionais (INF/UFRGS)
 | `int read2 (FILE2 handle, char *buffer, int size)`		| *---*				| *---* 					|
 | `int write2 (FILE2 handle, char *buffer, int size)`		| *---*				| *---* 					|
 | `int truncate2 (FILE2 handle)`							| *---*				| *---* 					|
-| `int seek2 (FILE2 handle, unsigned int offset)`			| *---*				| *---* 					|
+| `int seek2 (FILE2 handle, unsigned int offset)`			| *SIM*				| *SIM* 					|
 | `int mkdir2 (char *pathname)`								| *---*				| *---* 					|
 | `int rmdir2 (char *pathname)`								| *---*				| *---* 					|
 | `int chdir2(char *pathname)`								| *SIM*				| *SIM* 					|
