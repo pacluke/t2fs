@@ -400,8 +400,7 @@ struct t2fs_record *find_directory(struct t2fs_inode *dir_inode, char* dir_name)
 	// if(dir_inode->blocksFileSize > 2){
 	// 	printf("TODO >>> INDIRECT READING\n");
 	// }
-	directory->inodeNumber = ERROR;
-	return directory;
+	return NULL;
 }
 
 char *concat_dirs(char *dir1, char *dir2){
@@ -465,7 +464,7 @@ struct t2fs_record *get_record_by_inode_number(int i_node_number, struct t2fs_in
 	return NULL;
 }
 
-char *root_to_current(char *current_dir_name, struct t2fs_inode *work_inode){
+char *root_to_current(struct t2fs_inode *work_inode){
 
 	struct t2fs_record *father_record = malloc(sizeof(struct t2fs_record));
 	struct t2fs_record *self_record = malloc(sizeof(struct t2fs_record));
@@ -474,53 +473,86 @@ char *root_to_current(char *current_dir_name, struct t2fs_inode *work_inode){
 	struct t2fs_inode *father_inode = malloc(sizeof(struct t2fs_inode));
 	struct t2fs_inode *self_inode = malloc(sizeof(struct t2fs_inode));
 
-	int father_inode_number = -1;
-	int self_inode_number = -1;
+	if (father_record && self_record && aux && father_inode && self_inode)
+	{
 
-	char *father = "..";
-	char *self = ".";
+		int father_inode_number = -1;
+		int self_inode_number = -1;
 
-	char *full_path = ""; // = "";
-	// printf("FULL PATH: %s\n", full_path);
+		char *father = "..";
+		char *self = ".";
 
-	father_record = find_directory(work_inode, father);
-	father_inode_number = father_record->inodeNumber;
-	// printf("FATHER\n");
-	// print_record(father_record);
-
-	self_record = find_directory(work_inode, self);
-	self_inode_number = self_record->inodeNumber;
-	// printf("SELF\n");
-	// print_record(self_record);
-
-	while(self_inode_number != 0){
-		get_i_node(father_inode_number, father_inode);
-		get_i_node(self_inode_number, self_inode);
-
-		// printf("SELF w/ NAME\n");
-
-		aux = get_record_by_inode_number(self_inode_number, father_inode);
-		// printf("%s\n", aux->name);
-		// printf("ADDING: %s\n", aux->name);
-		full_path = concat_dirs(aux->name, full_path);
+		char *full_path = ""; // = "";
 		// printf("FULL PATH: %s\n", full_path);
 
-		father_record = find_directory(father_inode, father);
+		father_record = find_directory(work_inode, father);
+
+		if (father_record == NULL){
+			return NULL;
+		}
+
 		father_inode_number = father_record->inodeNumber;
 		// printf("FATHER\n");
 		// print_record(father_record);
 
-		self_record = find_directory(father_inode, self);
+		self_record = find_directory(work_inode, self);
+
+		if (self_record == NULL){
+			return NULL;
+		}
+
 		self_inode_number = self_record->inodeNumber;
 		// printf("SELF\n");
 		// print_record(self_record);
+
+		while(self_inode_number != 0){
+			if ((get_i_node(father_inode_number, father_inode) == ERROR) ||
+			(get_i_node(self_inode_number, self_inode) == ERROR)) {
+				return NULL;
+			}
+
+			// printf("SELF w/ NAME\n");
+
+			aux = get_record_by_inode_number(self_inode_number, father_inode);
+
+			if (aux == NULL) {
+				return NULL;
+			}
+
+			// printf("%s\n", aux->name);
+			// printf("ADDING: %s\n", aux->name);
+			full_path = concat_dirs(aux->name, full_path);
+			// printf("FULL PATH: %s\n", full_path);
+
+			father_record = find_directory(father_inode, father);
+
+			if (father_record == NULL){
+				return NULL;
+			}
+
+			father_inode_number = father_record->inodeNumber;
+			// printf("FATHER\n");
+			// print_record(father_record);
+
+			self_record = find_directory(father_inode, self);
+
+			if (self_record == NULL){
+				return NULL;
+			}
+
+			self_inode_number = self_record->inodeNumber;
+			// printf("SELF\n");
+			// print_record(self_record);
+		}
+
+		char *temp = malloc(sizeof(char)*(strlen(full_path) + 2));
+		strcat(temp, "/");
+		strcat(temp, full_path);
+		// printf("FULL PATH: %s\n", temp);
+		return temp;
 	}
 
-	char *temp = malloc(sizeof(char)*(strlen(full_path) + 2));
-	strcat(temp, "/");
-	strcat(temp, full_path);
-	// printf("FULL PATH: %s\n", temp);
-	return temp;
+	return NULL;
 }
 
 

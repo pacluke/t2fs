@@ -206,6 +206,21 @@ void debug_main(){
 
 	/*
 	******************************************************
+		Testes IDENTIFY2
+	******************************************************
+	*/
+
+	printf("\n\n\n[>>>>>>>IDENTIFY2<<<<<<<<]\n");
+
+	char namesssss[255];
+
+	identify2(namesssss, 255);
+
+	printf("GRUPO: \n%s\n", namesssss);
+
+
+	/*
+	******************************************************
 		Testes OPEN2
 	******************************************************
 	*/
@@ -337,7 +352,7 @@ void debug_main(){
 
 	printf("\n\n\n[>>>>>>>ROOT TO CURRENT<<<<<<<<]\n");
 
-	char *full_path = root_to_current("dir21", CURRENT_I_NODE);
+	char *full_path = root_to_current(CURRENT_I_NODE);
 
 	printf("FULL PATH OF dir21: %s\n\n\n", full_path);
 
