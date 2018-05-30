@@ -32,7 +32,7 @@ Segundo Trabalho da disciplina de Sistemas Operacionais (INF/UFRGS)
 | `int mkdir2 (char *pathname)`								| *---*				| *---* 					|
 | `int rmdir2 (char *pathname)`								| *---*				| *---* 					|
 | `int chdir2(char *pathname)`								| *SIM*				| *SIM* 					|
-| `int getcwd2 (char *pathname, int size)`					| *---*				| *---* 					|
+| `int getcwd2 (char *pathname, int size)`					| *SIM*				| *SIM* 					|
 | `DIR2 opendir2 (char *pathname)`							| *SIM*				| *SIM* 					|
 | `int readdir2 (DIR2 handle, DIRENT2 *dentry)`				| *---*				| *---* 					|
 | `int closedir2 (DIR2 handle) `							| *SIM*				| *SIM* 					|
