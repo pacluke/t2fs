@@ -139,3 +139,10 @@ char *concat_dirs(char *string1, char *string2);
 struct t2fs_record *get_record_by_inode_number(int i_node_number, struct t2fs_inode *dir);
 char *root_to_current(struct t2fs_inode *work_inode);
 int get_first_free_bitmap(int data_or_inode);
+int write_block(int block);
+int init_new_inode(struct t2fs_inode *new_inode);
+int verify_name(char *name, int dir_or_file);
+
+
+
+

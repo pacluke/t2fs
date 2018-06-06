@@ -409,26 +409,6 @@ char *concat_dirs(char *dir1, char *dir2){
 }
 
 
-// char *root_to_current(char *current_dir_name, struct t2fs_inode *work_inode){
-
-// 	struct t2fs_record *aux_record = malloc(sizeof(struct t2fs_record));
-// 	struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
-
-// 	char *father = "..";
-
-// 	aux_record = find_directory(work_inode, father);
-
-// 	while(aux_record->inodeNumber != 0){
-// 		print_record(aux_record);
-// 		get_i_node(aux_record->inodeNumber, aux_inode);
-// 		aux_record = find_directory(aux_inode, father);
-// 	}
-
-// 	print_record(aux_record);
-
-// 	return father;
-// }
-
 struct t2fs_record *get_record_by_inode_number(int i_node_number, struct t2fs_inode *dir){
 	struct t2fs_record *record;
 	record = (struct t2fs_record *) malloc(sizeof(struct t2fs_record));
@@ -566,6 +546,68 @@ int get_first_free_bitmap(int data_or_inode){
 	return first_free;
 
 }
+
+int write_block(int block){
+
+	unsigned char buffer[SECTOR_SIZE];
+	int sectors = (block * SUPERBLOCK->blockSize);
+
+	memcpy(&buffer, &CURRENT_BLOCK[0], SECTOR_SIZE);
+	if(write_sector(sectors, buffer) != SUCCESS){
+		return ERROR;
+	}
+	
+	memcpy(&buffer, &CURRENT_BLOCK[SECTOR_SIZE*1], SECTOR_SIZE);
+	if(write_sector(sectors+1, buffer) != SUCCESS){
+		return ERROR;
+	}
+	
+	memcpy(&buffer, &CURRENT_BLOCK[SECTOR_SIZE*2], SECTOR_SIZE);
+	if(write_sector(sectors+2, buffer) != SUCCESS){
+		return ERROR;
+	}
+
+	memcpy(&buffer, &CURRENT_BLOCK[SECTOR_SIZE*3], SECTOR_SIZE);
+	if(write_sector(sectors+3, buffer) != SUCCESS){
+		return ERROR;
+	}
+
+	return SUCCESS;
+}
+
+int init_new_inode(struct t2fs_inode *new_inode){
+
+	new_inode->blocksFileSize = 0;
+	new_inode->bytesFileSize = 0;
+	new_inode->dataPtr[0] = INVALID_PTR;
+	new_inode->dataPtr[1] = INVALID_PTR;
+	new_inode->singleIndPtr = INVALID_PTR;
+	new_inode->doubleIndPtr = INVALID_PTR;
+
+	return SUCCESS;
+}
+
+
+int verify_name(char *name, int dir_or_file){
+
+	if (dir_or_file == TYPEVAL_DIRETORIO){
+		
+	}
+
+	else if(dir_or_file == TYPEVAL_REGULAR){
+
+	}
+
+	return SUCCESS;
+}
+
+
+
+
+
+
+
+
 
 
 
