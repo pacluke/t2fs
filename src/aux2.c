@@ -555,5 +555,17 @@ char *root_to_current(struct t2fs_inode *work_inode){
 	return NULL;
 }
 
+int get_first_free_bitmap(int data_or_inode){
+
+	int first_free = 0;
+
+	while(getBitmap2(data_or_inode, first_free) == 1){
+		first_free++;
+	}
+
+	return first_free;
+
+}
+
 
 

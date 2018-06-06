@@ -138,3 +138,4 @@ struct t2fs_record *find_directory(struct t2fs_inode *dir_inode, char* dir_name)
 char *concat_dirs(char *string1, char *string2);
 struct t2fs_record *get_record_by_inode_number(int i_node_number, struct t2fs_inode *dir);
 char *root_to_current(struct t2fs_inode *work_inode);
+int get_first_free_bitmap(int data_or_inode);

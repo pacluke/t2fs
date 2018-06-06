@@ -487,6 +487,10 @@ void debug_main(){
 
 	printf("\n\n\n");
 
+
+	printf("first free bitmap for inode: %d \n", get_first_free_bitmap(0));
+	printf("first free bitmap for data: %d \n", get_first_free_bitmap(1));
+
 }
 
 /*-----------------------------------------------------------------------------

@@ -16,7 +16,7 @@ Segundo Trabalho da disciplina de Sistemas Operacionais (INF/UFRGS)
 
 
 
-Segundo Trabalho da disciplina de Sistemas Operacionais (INF/UFRGS)
+Situação atual:
 
 | Função													| Implementada?		| Operacional?				|
 | --------------------------------------------------------- |:-----------------:|:-------------------------:|
