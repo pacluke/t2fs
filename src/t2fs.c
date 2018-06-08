@@ -519,6 +519,23 @@ void debug_main(){
 		printf("VERIFICOU QUE não EXISTE %s\n", file_test_fail);
 	}
 
+
+	/*
+	******************************************************
+		Testes MKDIR2
+	******************************************************
+	*/
+
+	printf("\n\n\n[>>>>>>>MKDIR2<<<<<<<<]\n");
+	printf("[>>>>>>>MKDIR2<<<<<<<<]\n");
+	printf("[>>>>>>>MKDIR2<<<<<<<<]\n");
+	printf("\n\n\n");
+
+	char eita_giovana[] = "churrrros/churrascao";
+
+	mkdir2(eita_giovana);
+
+
 }
 
 /*-----------------------------------------------------------------------------
@@ -786,6 +803,45 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 	Em caso de erro, será retornado um valor diferente de zero.
 -----------------------------------------------------------------------------*/
 int mkdir2 (char *pathname){
+
+	struct t2fs_inode *work_directory;
+
+	if (pathname[0] == '/'){
+		work_directory = ROOT_I_NODE;
+	}
+
+	else {
+		work_directory = CURRENT_I_NODE;
+	}
+
+	if (verify_name(pathname, TYPEVAL_DIRETORIO, work_directory) == SUCCESS){
+		printf("ERROR: Diretório já existe.\n");
+		return ERROR;
+	}
+
+	int free_inode = get_first_free_bitmap(BITMAP_INODE);
+
+	char *filename = pathname;
+	char *temp = tail_dir(pathname);
+
+	while(temp != NULL){
+		filename = tail_dir(filename);
+		temp = tail_dir(temp);
+	}
+
+	filename = head_dir(filename);
+
+	// descobrir numero do i-node do pai
+	// current_i_node deve ser o pai
+	// no current tem que add info sobre o novo diretório
+	// no filho tem que add self (.) e pai (..)
+
+
+
+	printf("%s %d\n", filename, free_inode);
+
+	// printf("HEAD: %s, TAIL: %s\n", head_dir(pathname), tail_dir(pathname));
+
 
 
 	return ERROR;
