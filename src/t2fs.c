@@ -491,6 +491,34 @@ void debug_main(){
 	printf("first free bitmap for inode: %d \n", get_first_free_bitmap(0));
 	printf("first free bitmap for data: %d \n", get_first_free_bitmap(1));
 
+	char dir_test_ok[] = "dir2";
+	char file_test_ok[] = "file3";
+
+	if (verify_name(dir_test_ok, TYPEVAL_DIRETORIO, ROOT_I_NODE) == SUCCESS){
+		printf("VERIFICOU QUE EXISTE %s\n", dir_test_ok);
+	}
+
+	if (verify_name(file_test_ok, TYPEVAL_REGULAR, ROOT_I_NODE) == SUCCESS){
+		printf("VERIFICOU QUE EXISTE %s\n", file_test_ok);
+	}
+
+
+	if (get_i_node(5, CURRENT_I_NODE) == SUCCESS)
+		printf("[get_i_node] I-node de trabalho é o i-node 5.\n\n");
+
+
+	char dir_test_fail[] = "dir2";
+	char file_test_fail[] = "file3";
+
+
+	if (verify_name(dir_test_fail, TYPEVAL_DIRETORIO, CURRENT_I_NODE) == ERROR){
+		printf("VERIFICOU QUE não EXISTE %s\n", dir_test_fail);
+	}
+
+	if (verify_name(file_test_fail, TYPEVAL_REGULAR, CURRENT_I_NODE) == ERROR){
+		printf("VERIFICOU QUE não EXISTE %s\n", file_test_fail);
+	}
+
 }
 
 /*-----------------------------------------------------------------------------
@@ -991,13 +1019,3 @@ int closedir2 (DIR2 handle){
 
 	return ERROR;
 }
-
-
-
-
-
-
-
-
-
-

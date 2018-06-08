@@ -633,17 +633,21 @@ int init_new_inode(struct t2fs_inode *new_inode){
 }
 
 
-int verify_name(char *name, int dir_or_file){
+int verify_name(char *name, int dir_or_file, struct t2fs_inode *work_dir){
 
 	if (dir_or_file == TYPEVAL_DIRETORIO){
-		
+		if (find_directory(work_dir, name) != NULL){
+			return SUCCESS;
+		}
 	}
 
 	else if(dir_or_file == TYPEVAL_REGULAR){
-
+		if (find_file(work_dir, name) != NULL){
+			return SUCCESS;
+		}
 	}
 
-	return SUCCESS;
+	return ERROR;
 }
 
 

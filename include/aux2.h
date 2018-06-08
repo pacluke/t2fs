@@ -119,29 +119,53 @@ extern RECORDS_HANDLE *DIRECTORIES;
 /* ------------------------ */
 
 int init_superblock();
+
 int init_current_block();
+
 int init_root_i_node();
+
 int init_current_i_node();
+
 int init_records_list();
+
 int load_superblock();
+
 int init_all();
+
 void print_superblock();
+
 int load_block(int block);
+
 int get_i_node(int i_node_n, struct t2fs_inode *i_node);
+
 void print_i_node(struct t2fs_inode *i_node);
+
 void print_record(struct t2fs_record *record);
+
 int read_i_node_content(struct t2fs_inode *dir);
+
 char *head_dir(char *path);
+
 char *tail_dir(char *path);
+
 struct t2fs_record *find_file(struct t2fs_inode *dir_inode, char* filename);
+
 struct t2fs_record *find_directory(struct t2fs_inode *dir_inode, char* dir_name);
+
 char *concat_dirs(char *string1, char *string2);
+
 struct t2fs_record *get_record_by_inode_number(int i_node_number, struct t2fs_inode *dir);
+
 char *root_to_current(struct t2fs_inode *work_inode);
+
 int get_first_free_bitmap(int data_or_inode);
+
 int write_block(int block);
+
 int init_new_inode(struct t2fs_inode *new_inode);
-int verify_name(char *name, int dir_or_file);
+
+int verify_name(char *name, int dir_or_file, struct t2fs_inode *work_dir);
+
 
 
 
