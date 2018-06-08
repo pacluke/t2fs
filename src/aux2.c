@@ -159,7 +159,9 @@ int load_block(int block){
 int get_i_node(int i_node_n, struct t2fs_inode *i_node){
 
 	int position = i_node_n*(32);
-	int inode_block = (SUPERBLOCK->superblockSize + SUPERBLOCK->freeBlocksBitmapSize + SUPERBLOCK->freeInodeBitmapSize);
+	int inode_block = ((SUPERBLOCK->superblockSize + SUPERBLOCK->freeBlocksBitmapSize + SUPERBLOCK->freeInodeBitmapSize)
+						+ ((int)(i_node_n/32)));// a moral dessa divisão é que pode acontecer de não estar no primeiro bloco, 
+												// mas a gente não percebe isso quando trabalha só com os primeiros inodes
 
 	if (load_block(inode_block) == SUCCESS){
 		if(i_node){
@@ -650,6 +652,26 @@ int verify_name(char *name, int dir_or_file, struct t2fs_inode *work_dir){
 	return ERROR;
 }
 
+
+int init_empty_block(int block){
+
+	struct t2fs_record *aux_record = malloc(sizeof(struct t2fs_record));
+	aux_record->TypeVal = TYPEVAL_INVALIDO;
+
+	if(load_block(block) == SUCCESS){
+		for (int i = 0; i < MAX_RECORDS; ++i){
+			// memcpy(aux_record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
+			// aux_record.TypeVal = TYPEVAL_INVALIDO;
+			memcpy(&CURRENT_BLOCK[i*64], aux_record, sizeof(struct t2fs_record));
+		}
+
+		if (write_block(block) == SUCCESS){
+			return SUCCESS;
+		}
+	}
+
+	return ERROR;
+}
 
 
 

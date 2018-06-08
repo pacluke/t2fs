@@ -166,6 +166,8 @@ int init_new_inode(struct t2fs_inode *new_inode);
 
 int verify_name(char *name, int dir_or_file, struct t2fs_inode *work_dir);
 
+int init_empty_block(int block);
+
 
 
 

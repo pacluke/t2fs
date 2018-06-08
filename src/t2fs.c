@@ -820,6 +820,13 @@ int mkdir2 (char *pathname){
 	}
 
 	int free_inode = get_first_free_bitmap(BITMAP_INODE);
+	int i_node_block = ((SUPERBLOCK->superblockSize + SUPERBLOCK->freeBlocksBitmapSize + SUPERBLOCK->freeInodeBitmapSize)
+						+ ((int)(free_inode/32)));
+
+	if(load_block(i_node_block) != SUCCESS){
+		printf("ERROR: Erro na leitura do bloco do inode livre.\n");
+		return ERROR;
+	}
 
 	char *filename = pathname;
 	char *temp = tail_dir(pathname);
