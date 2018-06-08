@@ -118,6 +118,10 @@ extern RECORDS_HANDLE *FILES;
 extern RECORDS_HANDLE *DIRECTORIES;
 /* ------------------------ */
 
+/* CONTROLE DA INICIAÇÃO DAS ESTRUTURAS */
+extern int INIT;
+/* ------------------------ */
+
 int init_superblock();
 
 int init_current_block();

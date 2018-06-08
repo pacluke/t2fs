@@ -93,10 +93,20 @@ int load_superblock(){
 }
 
 int init_all(){
-	if((init_root_i_node() + init_current_i_node() + init_current_block() + init_superblock()) == SUCCESS)
-		if(load_superblock() == SUCCESS)
-			return SUCCESS;
-	return ERROR;
+	if(INIT == 0){
+		if((init_root_i_node() + init_current_i_node() + init_current_block() + init_superblock() + init_records_list()) == SUCCESS){
+			if(load_superblock() == SUCCESS){
+				INIT = 1;
+				printf("[init_all] Estruturas de dados iniciadas com sucesso e superbloco carregado.\n");
+				return SUCCESS;
+			}
+			printf("ERROR: Erro no carregamento do superbloco.\n");
+			return ERROR;
+		}
+		printf("ERROR: Erro na iniciação de alguma estrutura de dados.\n");
+		return ERROR;
+	}
+	return SUCCESS;
 }
 
 void print_superblock(){
@@ -587,6 +597,11 @@ int get_first_free_bitmap(int data_or_inode){
 	int first_free = 0;
 
 	while(getBitmap2(data_or_inode, first_free) == 1){
+
+		if (getBitmap2(data_or_inode, first_free) < 0){
+			return ERROR;
+		}
+
 		first_free++;
 	}
 
@@ -672,6 +687,7 @@ int init_empty_block(int block){
 
 	return ERROR;
 }
+
 
 
 

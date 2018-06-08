@@ -116,13 +116,15 @@ RECORDS_HANDLE *FILES;
 RECORDS_HANDLE *DIRECTORIES;
 /* ------------------------ */
 
+/* CONTROLE DA INICIAÇÃO DAS ESTRUTURAS */
+int INIT = 0;
+/* ------------------------ */
 
 void debug_main(){
 
 	printf("\n");
 	if (init_all() == SUCCESS)
-		printf("[init_all] Estruturas de dados iniciadas com sucesso e superbloco carregado.\n");
-	printf("\n\n..:: INFO SOBRE O SUEPRBLOCO ::..\n\n");
+		printf("\n\n..:: INFO SOBRE O SUEPRBLOCO ::..\n\n");
 	print_superblock();
 	printf("\n");
 	init_records_list();
@@ -581,6 +583,10 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna o handle d
 -----------------------------------------------------------------------------*/
 FILE2 create2 (char *filename){
 
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
+
 
 	return ERROR;
 }
@@ -597,6 +603,9 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int delete2 (char *filename){
 
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
 
 	return ERROR;
 }
@@ -617,6 +626,10 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna o handle d
 	Em caso de erro, deve ser retornado um valor negativo
 -----------------------------------------------------------------------------*/
 FILE2 open2 (char *filename){
+
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
 
 	struct t2fs_inode *work_directory;
 	struct t2fs_record *file_record = malloc(sizeof(struct t2fs_record));
@@ -674,6 +687,10 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int close2 (FILE2 handle){
 
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
+
 	if (FILES[handle].record_info->TypeVal == TYPEVAL_REGULAR){
 		FILES[handle].record_info->TypeVal = TYPEVAL_INVALIDO;
 		FILES[handle].record_info->inodeNumber = -1;
@@ -701,6 +718,9 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna o número 
 -----------------------------------------------------------------------------*/
 int read2 (FILE2 handle, char *buffer, int size){
 
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
 
 	return ERROR;
 }
@@ -720,6 +740,9 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna o número 
 -----------------------------------------------------------------------------*/
 int write2 (FILE2 handle, char *buffer, int size){
 
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
 
 	return ERROR;
 }
@@ -738,6 +761,9 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int truncate2 (FILE2 handle){
 
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
 
 	return ERROR;
 }
@@ -757,6 +783,10 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 	Em caso de erro, será retornado um valor diferente de zero.
 -----------------------------------------------------------------------------*/
 int seek2 (FILE2 handle, DWORD offset){
+
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
 
 	if (handle < 0 || handle > 10){
 		printf("ERROR: Handle inválido.\n");
@@ -804,6 +834,10 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int mkdir2 (char *pathname){
 
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
+
 	struct t2fs_inode *work_directory;
 
 	if (pathname[0] == '/'){
@@ -820,6 +854,12 @@ int mkdir2 (char *pathname){
 	}
 
 	int free_inode = get_first_free_bitmap(BITMAP_INODE);
+
+	if (free_inode < 0){
+		printf("ERROR: Erro ao encontrar um espaço vazio no bitmap.\n");
+		return ERROR;
+	}
+
 	int i_node_block = ((SUPERBLOCK->superblockSize + SUPERBLOCK->freeBlocksBitmapSize + SUPERBLOCK->freeInodeBitmapSize)
 						+ ((int)(free_inode/32)));
 
@@ -872,6 +912,9 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int rmdir2 (char *pathname){
 
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
 
 	return ERROR;
 }
@@ -890,6 +933,10 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 		Em caso de erro, será retornado um valor diferente de zero.
 -----------------------------------------------------------------------------*/
 int chdir2 (char *pathname){
+
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
 
 	struct t2fs_inode *work_directory;
 	struct t2fs_record *file_record = malloc(sizeof(struct t2fs_record));
@@ -951,6 +998,10 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int getcwd2 (char *pathname, int size){
 
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
+
 	char root[] = "/";
 
 	if (CURRENT_I_NODE == ROOT_I_NODE){
@@ -990,6 +1041,10 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna o identifi
 	Em caso de erro, será retornado um valor negativo.
 -----------------------------------------------------------------------------*/
 DIR2 opendir2 (char *pathname){
+
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
 
 	struct t2fs_inode *work_directory;
 	struct t2fs_record *file_record = malloc(sizeof(struct t2fs_record));
@@ -1057,6 +1112,9 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int readdir2 (DIR2 handle, DIRENT2 *dentry){
 
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
 
 	return ERROR;
 }
@@ -1071,6 +1129,10 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 	Em caso de erro, será retornado um valor diferente de zero.
 -----------------------------------------------------------------------------*/
 int closedir2 (DIR2 handle){
+
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
 
 	if (DIRECTORIES[handle].record_info->TypeVal == TYPEVAL_DIRETORIO){
 		DIRECTORIES[handle].record_info->TypeVal = TYPEVAL_INVALIDO;
