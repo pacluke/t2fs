@@ -264,7 +264,7 @@ int init_new_inode(struct t2fs_inode *new_inode);
 	Verifica se o nome em name já existe
 	como arquivo ou diretório.
 *************************************/
-int verify_name(char *name, int dir_or_file, struct t2fs_inode *work_dir);
+int verify_name(char *name, BYTE dir_or_file, struct t2fs_inode *work_dir);
 
 /*************************************
 	Inicia um bloco que não possui 
@@ -272,7 +272,11 @@ int verify_name(char *name, int dir_or_file, struct t2fs_inode *work_dir);
 *************************************/
 int init_empty_inode_block(int block);
 
-
+/*************************************
+	Cria entradas de diretório para
+	colocar em um diretório.
+*************************************/
+int make_entry(char *filename, struct t2fs_record *father_record, BYTE dir_or_file, int new_inode_number);
 
 
 

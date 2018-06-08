@@ -650,7 +650,7 @@ int init_new_inode(struct t2fs_inode *new_inode){
 }
 
 
-int verify_name(char *name, int dir_or_file, struct t2fs_inode *work_dir){
+int verify_name(char *name, BYTE dir_or_file, struct t2fs_inode *work_dir){
 
 	if (dir_or_file == TYPEVAL_DIRETORIO){
 		if (find_directory(work_dir, name) != NULL){
@@ -729,11 +729,93 @@ int init_empty_data_block(int i_node_number, int data_ptr){
 }
 
 
-// int make_entry(char *filename, struct t2fs_record *father_record, int dir_or_file){
+int make_entry(char *filename, struct t2fs_record *father_record, BYTE dir_or_file, int new_inode_number){
 
-	
+	struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
+	struct t2fs_record *aux_record = malloc(sizeof(struct t2fs_record));
 
-// }
+	if (get_i_node(father_record->inodeNumber, aux_inode) == SUCCESS){
+
+		if (aux_inode->blocksFileSize == 0){
+			if (init_empty_data_block(father_record->inodeNumber, 0) == SUCCESS){
+				get_i_node(father_record->inodeNumber, aux_inode);
+				if (init_empty_inode_block(aux_inode->dataPtr[0]) == SUCCESS){
+					get_i_node(father_record->inodeNumber, aux_inode);
+				}
+			}
+		}
+
+		if (aux_inode->blocksFileSize > 0){
+			if (load_block(aux_inode->dataPtr[0]) == SUCCESS){
+
+				for (int i = 0; i < MAX_RECORDS; ++i){
+					memcpy(aux_record,	&CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
+					if (aux_record->TypeVal == TYPEVAL_INVALIDO){
+						aux_record->TypeVal = dir_or_file;
+						aux_record->inodeNumber = new_inode_number;
+						strcpy(aux_record->name, filename);
+						memcpy(&CURRENT_BLOCK[i*64], aux_record, sizeof(struct t2fs_record));
+						if (write_block(aux_inode->dataPtr[0]) != SUCCESS){
+							return ERROR;
+						}
+						get_i_node(father_record->inodeNumber, aux_inode);
+						aux_inode->bytesFileSize = aux_inode->bytesFileSize + sizeof(struct t2fs_record);
+
+
+						memcpy(&CURRENT_BLOCK[sizeof(struct t2fs_inode) * (father_record->inodeNumber % (1024/sizeof(struct t2fs_inode)))],
+							&aux_inode, sizeof(struct t2fs_inode));
+
+						write_block(3 + (int)(father_record->inodeNumber/(1024/sizeof(struct t2fs_inode))));
+					}
+				}
+
+			}
+		}
+
+		if (aux_inode->blocksFileSize == 1){
+			if (init_empty_data_block(father_record->inodeNumber, 1) == SUCCESS){
+				get_i_node(father_record->inodeNumber, aux_inode);
+				if (init_empty_inode_block(aux_inode->dataPtr[1]) == SUCCESS){
+					get_i_node(father_record->inodeNumber, aux_inode);
+				}
+			}
+		}
+
+		if (aux_inode->blocksFileSize > 1){
+			if (load_block(aux_inode->dataPtr[1]) == SUCCESS){
+
+				for (int i = 0; i < MAX_RECORDS; ++i){
+					memcpy(aux_record,	&CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
+					if (aux_record->TypeVal == TYPEVAL_INVALIDO){
+						aux_record->TypeVal = dir_or_file;
+						aux_record->inodeNumber = new_inode_number;
+						strcpy(aux_record->name, filename);
+						memcpy(&CURRENT_BLOCK[i*64], aux_record, sizeof(struct t2fs_record));
+						if (write_block(aux_inode->dataPtr[1]) != SUCCESS){
+							return ERROR;
+						}
+						get_i_node(father_record->inodeNumber, aux_inode);
+						aux_inode->bytesFileSize = aux_inode->bytesFileSize + sizeof(struct t2fs_record);
+						
+
+						memcpy(&CURRENT_BLOCK[sizeof(struct t2fs_inode) * (father_record->inodeNumber % (1024/sizeof(struct t2fs_inode)))],
+							&aux_inode, sizeof(struct t2fs_inode));
+
+						write_block(3 + (int)(father_record->inodeNumber/(1024/sizeof(struct t2fs_inode))));
+					}
+				}
+
+			}
+		}
+
+		else {
+			printf("ERROR: Indireções não implementadas.\n");
+			return ERROR;
+		}
+	}
+
+	return ERROR;
+}
 
 
 
