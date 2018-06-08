@@ -270,7 +270,7 @@ int verify_name(char *name, int dir_or_file, struct t2fs_inode *work_dir);
 	Inicia um bloco que não possui 
 	nada escrito.
 *************************************/
-int init_empty_block(int block);
+int init_empty_inode_block(int block);
 
 
 

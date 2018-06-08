@@ -236,9 +236,9 @@ int read_i_node_content(struct t2fs_inode *dir){
 	}
 	if(dir->blocksFileSize > 1){
 		if (load_block(dir->dataPtr[1]) == SUCCESS){
-			if(record->TypeVal == TYPEVAL_REGULAR || record->TypeVal == TYPEVAL_DIRETORIO){
-				for(int i = 0; i < MAX_RECORDS; i++) {
-					memcpy(record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
+			for(int i = 0; i < MAX_RECORDS; i++) {
+				memcpy(record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
+				if(record->TypeVal == TYPEVAL_REGULAR || record->TypeVal == TYPEVAL_DIRETORIO){
 					print_record(record);
 				}
 			}
@@ -668,7 +668,7 @@ int verify_name(char *name, int dir_or_file, struct t2fs_inode *work_dir){
 }
 
 
-int init_empty_block(int block){
+int init_empty_inode_block(int block){
 
 	struct t2fs_record *aux_record = malloc(sizeof(struct t2fs_record));
 	aux_record->TypeVal = TYPEVAL_INVALIDO;
@@ -687,6 +687,53 @@ int init_empty_block(int block){
 
 	return ERROR;
 }
+
+int init_empty_data_block(int i_node_number, int data_ptr){
+
+	int new_block = get_first_free_bitmap(BITMAP_DADOS);
+
+	if (new_block > 0){
+
+		// setBitmap2(BITMAP_DADOS, new_block, 1);
+		struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
+
+		if (get_i_node(i_node_number, aux_inode) != SUCCESS){
+				return ERROR;
+		}
+
+		if (data_ptr == 0){
+			aux_inode->dataPtr[0] = new_block;
+			aux_inode->dataPtr[1] = INVALID_PTR;
+			aux_inode->blocksFileSize = 1;
+
+			memcpy(&CURRENT_BLOCK[sizeof(struct t2fs_inode) * (i_node_number % (1024/sizeof(struct t2fs_inode)))],
+				&aux_inode, sizeof(struct t2fs_inode));
+
+			write_block(3 + (int)(i_node_number/(1024/sizeof(struct t2fs_inode))));
+			return new_block;
+		}
+
+		if (data_ptr == 1){
+			aux_inode->dataPtr[1] = new_block;
+			aux_inode->blocksFileSize = 2;
+
+			memcpy(&CURRENT_BLOCK[sizeof(struct t2fs_inode) * (i_node_number % (1024/sizeof(struct t2fs_inode)))],
+				&aux_inode, sizeof(struct t2fs_inode));
+
+			write_block(3 + (int)(i_node_number/(1024/sizeof(struct t2fs_inode))));
+			return new_block;
+		}
+	}
+
+	return ERROR;
+}
+
+
+// int make_entry(char *filename, struct t2fs_record *father_record, int dir_or_file){
+
+	
+
+// }
 
 
 

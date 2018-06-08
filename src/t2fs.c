@@ -534,8 +534,10 @@ void debug_main(){
 	printf("\n\n\n");
 
 	char eita_giovana[] = "churrrros/churrascao";
+	char eita_cuzaum[] = "/dir2";
 
 	mkdir2(eita_giovana);
+	mkdir2(eita_cuzaum);
 
 
 }
@@ -868,6 +870,9 @@ int mkdir2 (char *pathname){
 		return ERROR;
 	}
 
+	// escreve no bloco	
+	// seta bitmap novo dos brother
+
 	char *filename = pathname;
 	char *temp = tail_dir(pathname);
 
@@ -876,7 +881,7 @@ int mkdir2 (char *pathname){
 		temp = tail_dir(temp);
 	}
 
-	filename = head_dir(filename);
+	filename = head_dir(filename); // nome do novo diretório
 
 	// descobrir numero do i-node do pai
 	// current_i_node deve ser o pai
