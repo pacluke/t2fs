@@ -45,7 +45,8 @@ int init_records_list(){
 	FILES = malloc(sizeof(RECORDS_HANDLE) * 10);
 	DIRECTORIES = malloc(sizeof(RECORDS_HANDLE) * 10);
 
-	for (int i = 0; i < 10; ++i)
+	int i = 0;
+	for (i = 0; i < 10; ++i)
 	{
 		FILES[i].record_info = malloc(sizeof(struct t2fs_record));
 		FILES[i].record_info->TypeVal = TYPEVAL_INVALIDO;
@@ -228,7 +229,8 @@ int read_i_node_content(struct t2fs_inode *dir){
 
 	if(dir->blocksFileSize > 0){
 		if (load_block(dir->dataPtr[0]) == SUCCESS){
-			for(int i = 0; i < MAX_RECORDS; i++) {
+			int i = 0;
+			for(i = 0; i < MAX_RECORDS; i++) {
 				memcpy(record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
 				if(record->TypeVal == TYPEVAL_REGULAR || record->TypeVal == TYPEVAL_DIRETORIO){
 					print_record(record);
@@ -239,7 +241,8 @@ int read_i_node_content(struct t2fs_inode *dir){
 	}
 	if(dir->blocksFileSize > 1){
 		if (load_block(dir->dataPtr[1]) == SUCCESS){
-			for(int i = 0; i < MAX_RECORDS; i++) {
+			int i = 0;
+			for(i = 0; i < MAX_RECORDS; i++) {
 				memcpy(record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
 				if(record->TypeVal == TYPEVAL_REGULAR || record->TypeVal == TYPEVAL_DIRETORIO){
 					print_record(record);
@@ -290,7 +293,8 @@ char *tail_dir(char *path){
 
 	int tail_count = 0;
 
-	for (int i = head_size; i < strlen(path); ++i)
+	int i = 0;
+	for (i = head_size; i < strlen(path); ++i)
 	{
 		tail[tail_count] = path[i];
 		tail_count++;
@@ -314,7 +318,8 @@ struct t2fs_record *find_file(struct t2fs_inode *dir_inode, char* filename){
 
 	if(dir_inode->blocksFileSize > 0){
 		if (load_block(dir_inode->dataPtr[0]) == SUCCESS){
-			for (int i = 0; i < MAX_RECORDS; ++i){
+			int i = 0;
+			for (i = 0; i < MAX_RECORDS; ++i){
 				memcpy(file, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
 				if(file->TypeVal == TYPEVAL_REGULAR && ((strcmp(name, file->name) == SUCCESS))){
 					return file;
@@ -337,7 +342,8 @@ struct t2fs_record *find_file(struct t2fs_inode *dir_inode, char* filename){
 	}
 	if(dir_inode->blocksFileSize > 1){
 		if (load_block(dir_inode->dataPtr[1]) == SUCCESS){
-			for (int i = 0; i < MAX_RECORDS; ++i){
+			int i = 0;
+			for (i = 0; i < MAX_RECORDS; ++i){
 				memcpy(file, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
 				if(file->TypeVal == TYPEVAL_REGULAR && ((strcmp(name, file->name) == SUCCESS))){
 					return file;
@@ -384,7 +390,8 @@ struct t2fs_record *find_directory(struct t2fs_inode *dir_inode, char* dir_name)
 
 	if(dir_inode->blocksFileSize > 0){
 		if (load_block(dir_inode->dataPtr[0]) == SUCCESS){
-			for (int i = 0; i < MAX_RECORDS; ++i){
+			int i = 0;
+			for (i = 0; i < MAX_RECORDS; ++i){
 				memcpy(directory, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
 
 				// printf("???1 %d\n", directory->TypeVal == TYPEVAL_DIRETORIO);
@@ -417,7 +424,8 @@ struct t2fs_record *find_directory(struct t2fs_inode *dir_inode, char* dir_name)
 
 	if(dir_inode->blocksFileSize > 1){
 		if (load_block(dir_inode->dataPtr[1]) == SUCCESS){
-			for (int i = 0; i < MAX_RECORDS; ++i){
+			int i = 0;
+			for (i = 0; i < MAX_RECORDS; ++i){
 				memcpy(directory, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
 
 				// printf("???1 %d\n", directory->TypeVal == TYPEVAL_DIRETORIO);
@@ -471,7 +479,8 @@ struct t2fs_record *get_record_by_inode_number(int i_node_number, struct t2fs_in
 
 	if(dir->blocksFileSize > 0){
 		if (load_block(dir->dataPtr[0]) == SUCCESS){
-			for(int i = 0; i < MAX_RECORDS; i++) {
+			int i = 0;
+			for(i = 0; i < MAX_RECORDS; i++) {
 				memcpy(record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
 				if((record->TypeVal == TYPEVAL_REGULAR || record->TypeVal == TYPEVAL_DIRETORIO) && 
 					(strcmp(record->name, "..") != SUCCESS) && (strcmp(record->name, ".") != SUCCESS) &&
@@ -485,7 +494,8 @@ struct t2fs_record *get_record_by_inode_number(int i_node_number, struct t2fs_in
 	
 	if(dir->blocksFileSize > 1){
 		if (load_block(dir->dataPtr[1]) == SUCCESS){
-			for(int i = 0; i < MAX_RECORDS; i++) {
+			int i = 0;
+			for(i = 0; i < MAX_RECORDS; i++) {
 				memcpy(record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
 				if((record->TypeVal == TYPEVAL_REGULAR || record->TypeVal == TYPEVAL_DIRETORIO) && 
 					(strcmp(record->name, "..") != SUCCESS) && (strcmp(record->name, ".") != SUCCESS) &&
@@ -677,7 +687,8 @@ int init_empty_inode_block(int block){
 	aux_record->TypeVal = TYPEVAL_INVALIDO;
 
 	if(load_block(block) == SUCCESS){
-		for (int i = 0; i < MAX_RECORDS; ++i){
+		int i = 0;
+		for (i = 0; i < MAX_RECORDS; ++i){
 			// memcpy(aux_record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
 			// aux_record.TypeVal = TYPEVAL_INVALIDO;
 			memcpy(&CURRENT_BLOCK[i*64], aux_record, sizeof(struct t2fs_record));
@@ -750,8 +761,8 @@ int make_entry(char *filename, struct t2fs_record *father_record, BYTE dir_or_fi
 
 		if (aux_inode->blocksFileSize > 0){
 			if (load_block(aux_inode->dataPtr[0]) == SUCCESS){
-
-				for (int i = 0; i < MAX_RECORDS; ++i){
+				int i = 0;
+				for (i = 0; i < MAX_RECORDS; ++i){
 					memcpy(aux_record,	&CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
 					if (aux_record->TypeVal == TYPEVAL_INVALIDO){
 						aux_record->TypeVal = dir_or_file;
@@ -786,8 +797,8 @@ int make_entry(char *filename, struct t2fs_record *father_record, BYTE dir_or_fi
 
 		if (aux_inode->blocksFileSize > 1){
 			if (load_block(aux_inode->dataPtr[1]) == SUCCESS){
-
-				for (int i = 0; i < MAX_RECORDS; ++i){
+				int i = 0;
+				for (i = 0; i < MAX_RECORDS; ++i){
 					memcpy(aux_record,	&CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
 					if (aux_record->TypeVal == TYPEVAL_INVALIDO){
 						aux_record->TypeVal = dir_or_file;

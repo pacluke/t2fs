@@ -667,7 +667,8 @@ FILE2 open2 (char *filename){
 	file_record = find_file(work_directory, filename);
 
 	if (file_record != NULL){
-		for (int i = 0; i < 10; ++i){
+		int i = 0;
+		for(i = 0; i < 10; ++i){
 			if (FILES[i].record_info->TypeVal == TYPEVAL_REGULAR &&
 				FILES[i].record_info->inodeNumber == file_record->inodeNumber){
 				FILES[i].seek_pointer = 0;
@@ -798,7 +799,7 @@ int read2 (FILE2 handle, char *buffer, int size){
 						(f_ctr < 1024)){
 
 						buffer[b_ctr] = CURRENT_BLOCK[f_ctr];
-					
+
 						b_ctr++;
 						f_ctr++;
 					}
@@ -1245,7 +1246,8 @@ DIR2 opendir2 (char *pathname){
 	}
 
 	if (file_record != NULL){
-		for (int i = 0; i < 10; ++i){
+		int i = 0;
+		for (i = 0; i < 10; ++i){
 			if (DIRECTORIES[i].record_info->TypeVal == TYPEVAL_DIRETORIO &&
 				DIRECTORIES[i].record_info->inodeNumber == file_record->inodeNumber){
 				handle = i;
