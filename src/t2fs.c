@@ -743,6 +743,18 @@ int read2 (FILE2 handle, char *buffer, int size){
 		return ERROR;
 	}
 
+	if (handle > 9 || handle < 0 || FILES[handle].record_info->inodeNumber == -1){
+		printf("ERROR: Handle inválido.\n");
+		return ERROR;
+	}
+
+	struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
+
+	if (get_i_node(FILES[handle].record_info->inodeNumber, aux_inode) == SUCCESS){
+
+
+	}
+
 	return ERROR;
 }
 
@@ -855,9 +867,9 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int mkdir2 (char *pathname){
 
-	// if (init_all() != SUCCESS){
-	// 	return ERROR;
-	// }
+	if (init_all() != SUCCESS){
+		return ERROR;
+	}
 
 	// struct t2fs_inode *work_directory = malloc(sizeof(struct t2fs_inode));
 
@@ -1036,7 +1048,7 @@ int chdir2 (char *pathname){
 		return ERROR;
 	}
 
-	struct t2fs_inode *work_directory;
+	struct t2fs_inode *work_directory = malloc(sizeof(struct t2fs_inode));
 	struct t2fs_record *file_record = malloc(sizeof(struct t2fs_record));
 	struct t2fs_inode *work_inode = malloc(sizeof(struct t2fs_inode));
 
@@ -1144,6 +1156,14 @@ DIR2 opendir2 (char *pathname){
 		return ERROR;
 	}
 
+	struct t2fs_record *current_i_node_cpy = malloc(sizeof(struct t2fs_record));
+
+	// printf(" INODE::::::..... %d\n", current_i_node_cpy->inodeNumber);
+
+	char self [] = ".";
+
+	current_i_node_cpy = find_directory(CURRENT_I_NODE, self);
+
 	struct t2fs_inode *work_directory;
 	struct t2fs_record *file_record = malloc(sizeof(struct t2fs_record));
 	int handle = -10;
@@ -1174,27 +1194,36 @@ DIR2 opendir2 (char *pathname){
 				DIRECTORIES[i].record_info->inodeNumber == file_record->inodeNumber){
 				handle = i;
 
+				get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
+				// printf("OPDIR> INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
 				return handle;
 			}
 			else if (handle == -10 && 
 				DIRECTORIES[i].record_info->TypeVal == TYPEVAL_INVALIDO){
 				handle = i;
+				get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
+				// printf("OPDIR> INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
 			}
 		}
 
 		if (handle >= 0){
 			DIRECTORIES[handle].record_info = file_record;
 			get_i_node(DIRECTORIES[handle].record_info->inodeNumber, CURRENT_I_NODE);
+			// printf("OPDIR> INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
 			return handle;
 		}
 
 		else {
+			get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
+			// printf(" OPDIR>INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
 			printf("ERRO: Maximo de diretórios abertos atingido.\n");
 			return ERROR;
 		}
 	}
 
 	else{
+		get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
+		// printf("OPDIR> INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
 		printf("ERRO: Diretório não encontrado.\n");
 		return ERROR;
 	}
@@ -1224,13 +1253,31 @@ int readdir2 (DIR2 handle, DIRENT2 *dentry){
 		return ERROR;
 	}
 
-	if (get_i_node(DIRECTORIES[handle].record_info->inodeNumber, CURRENT_I_NODE) == SUCCESS){
+	if (handle > 9 || handle < 0 || DIRECTORIES[handle].record_info->inodeNumber == -1){
+		printf("ERROR: Handle inválido.\n");
+		return ERROR;
+	}
+
+	struct t2fs_record *current_i_node_cpy = malloc(sizeof(struct t2fs_record));
+
+	// printf(" INODE::::::..... %d\n", current_i_node_cpy->inodeNumber);
+
+	char self [] = "..";
+
+	current_i_node_cpy = find_directory(CURRENT_I_NODE, self);
+
+	// printf("INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
+
+
+	struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
+
+	if (get_i_node(DIRECTORIES[handle].record_info->inodeNumber, aux_inode) == SUCCESS){
 
 		struct t2fs_record *aux_record;
 		aux_record = (struct t2fs_record *) malloc(sizeof(struct t2fs_record));
 
-		if(CURRENT_I_NODE->blocksFileSize > 0){
-			if (load_block(CURRENT_I_NODE->dataPtr[0]) == SUCCESS){
+		if(aux_inode->blocksFileSize > 0){
+			if (load_block(aux_inode->dataPtr[0]) == SUCCESS){
 				int i = DIRECTORIES[handle].seek_pointer;
 				if (i < 16) {
 					memcpy(aux_record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
@@ -1242,18 +1289,23 @@ int readdir2 (DIR2 handle, DIRENT2 *dentry){
 							dentry->fileSize = aux_inode->bytesFileSize;
 						}
 						DIRECTORIES[handle].seek_pointer++;
+
+						get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
+						// printf("INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
 						return SUCCESS;
 					}
-					
+
 					else {
+						get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
+						// printf("INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
 						return ERROR;
 					}
 				}
 			}
 		}
 
-		if(CURRENT_I_NODE->blocksFileSize > 1){
-			if (load_block(CURRENT_I_NODE->dataPtr[1]) == SUCCESS){
+		if(aux_inode->blocksFileSize > 1){
+			if (load_block(aux_inode->dataPtr[1]) == SUCCESS){
 				int i = DIRECTORIES[handle].seek_pointer;
 				if (i < 32) {
 					memcpy(aux_record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
@@ -1265,15 +1317,23 @@ int readdir2 (DIR2 handle, DIRENT2 *dentry){
 							dentry->fileSize = aux_inode->bytesFileSize;
 						}
 						DIRECTORIES[handle].seek_pointer++;
+
+						get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
+						// printf("INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
 						return SUCCESS;
 					}
 					else {
+
+						get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
+						// printf("INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
 						return ERROR;
 					}
 				}
 			}
 		}
 
+		get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
+		printf("INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
 		return ERROR;
 	}
 
