@@ -15,7 +15,7 @@
 #define TRUE 1
 #define FALSE 0
 /* ------------------------ */
-#define NAMES "Lucas Flores 00242317\nMatheus Westhelle 00206688\nRodrigo Madruga 00180669\n"
+#define NAMES "Lucas Flores - 00242317\nMatheus Westhelle - 00206688\nRodrigo Madruga - 00180669\n"
 #define N_SIZE 85
 /* ------------------------ */
 

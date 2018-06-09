@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include <limits.h>
 #include "../include/t2fs.h"
 #include "../include/apidisk.h"
 #include "../include/bitmap2.h"
@@ -24,15 +22,21 @@ int init_current_block(){
 
 int init_root_i_node(){
 	ROOT_I_NODE = (struct t2fs_inode *)malloc(sizeof(struct t2fs_inode));	
-	if(ROOT_I_NODE)
-		return SUCCESS;
+	if(ROOT_I_NODE){
+		if (get_i_node(0, ROOT_I_NODE) == SUCCESS){
+			return SUCCESS;
+		}
+	}
 	return ERROR;
 }
 
 int init_current_i_node(){
 	CURRENT_I_NODE = (struct t2fs_inode *)malloc(sizeof(struct t2fs_inode));	
-	if(CURRENT_I_NODE)
-		return SUCCESS;
+	if(CURRENT_I_NODE){
+		if (get_i_node(0, CURRENT_I_NODE) == SUCCESS){
+			return SUCCESS;
+		}
+	}
 	return ERROR;
 }
 
@@ -53,7 +57,7 @@ int init_records_list(){
 		DIRECTORIES[i].record_info->TypeVal = TYPEVAL_INVALIDO;
 		DIRECTORIES[i].record_info->inodeNumber = -1;
 		strcpy(DIRECTORIES[i].record_info->name, "indef");
-		DIRECTORIES[i].seek_pointer = -1;
+		DIRECTORIES[i].seek_pointer = 0;
 	}
 
 	return SUCCESS;
@@ -94,10 +98,10 @@ int load_superblock(){
 
 int init_all(){
 	if(INIT == 0){
-		if((init_root_i_node() + init_current_i_node() + init_current_block() + init_superblock() + init_records_list()) == SUCCESS){
-			if(load_superblock() == SUCCESS){
+		if((init_current_block() + init_superblock() + init_records_list()) == SUCCESS){
+			if(load_superblock() == SUCCESS && (init_root_i_node() + init_current_i_node()) == SUCCESS){
 				INIT = 1;
-				printf("[init_all] Estruturas de dados iniciadas com sucesso e superbloco carregado.\n");
+				// printf("[init_all] Estruturas de dados iniciadas com sucesso e superbloco carregado.\n");
 				return SUCCESS;
 			}
 			printf("ERROR: Erro no carregamento do superbloco.\n");
@@ -172,7 +176,6 @@ int get_i_node(int i_node_n, struct t2fs_inode *i_node){
 	int inode_block = ((SUPERBLOCK->superblockSize + SUPERBLOCK->freeBlocksBitmapSize + SUPERBLOCK->freeInodeBitmapSize)
 						+ ((int)(i_node_n/32)));// a moral dessa divisão é que pode acontecer de não estar no primeiro bloco, 
 												// mas a gente não percebe isso quando trabalha só com os primeiros inodes
-
 	if (load_block(inode_block) == SUCCESS){
 		if(i_node){
 			memcpy(&(i_node->blocksFileSize),

@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include <limits.h>
 #include "../include/t2fs.h"
 #include "../include/apidisk.h"
 #include "../include/bitmap2.h"
@@ -15,7 +13,7 @@
 #define TRUE 1
 #define FALSE 0
 /* ------------------------ */
-#define NAMES "Lucas Flores 00242317\nMatheus Westhelle 00206688\nRodrigo Madruga 00180669\n"
+#define NAMES "Lucas Flores - 00242317\nMatheus Westhelle - 00206688\nRodrigo Madruga - 00180669\n"
 #define N_SIZE 85
 /* ------------------------ */
 
@@ -536,13 +534,31 @@ void debug_main(){
 	// if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
 	// 	printf("[get_i_node] I-node de trabalho é o i-node 0.\n\n");
 
-	char eita_giovana[] = "/dir2/churrascao";
-	// char eita_cuzaum[] = "/dir2";
+	// char eita_giovana[] = "/dir2/churrascao";
+	// // char eita_cuzaum[] = "/miau";
 
-	mkdir2(eita_giovana);
-	// mkdir2(eita_cuzaum);
+	// mkdir2(eita_giovana);
+	// // mkdir2(eita_cuzaum);
 
+	// read_i_node_content(ROOT_I_NODE);
 
+	/*
+	******************************************************
+		Testes READDIR2
+	******************************************************
+	*/
+
+	printf("\n\n\n[>>>>>>>READDIR2<<<<<<<<]\n");
+	printf("[>>>>>>>READDIR2<<<<<<<<]\n");
+	printf("[>>>>>>>READDIR2<<<<<<<<]\n");
+	printf("\n\n\n");
+
+	opendir2("/");
+
+    DIRENT2 dentry;
+    while ( readdir2(0, &dentry) == SUCCESS ) {
+        printf ("%c %8u %s\n", (dentry.fileType==0x02?'d':'-'), dentry.fileSize, dentry.name);
+    }
 }
 
 /*-----------------------------------------------------------------------------
@@ -636,6 +652,7 @@ FILE2 open2 (char *filename){
 		return ERROR;
 	}
 
+
 	struct t2fs_inode *work_directory;
 	struct t2fs_record *file_record = malloc(sizeof(struct t2fs_record));
 	int handle = -10;
@@ -648,9 +665,8 @@ FILE2 open2 (char *filename){
 	}
 
 	file_record = find_file(work_directory, filename);
-	// printf("file_record->inodeNumber = %d\n", file_record->inodeNumber);
 
-	if (file_record->inodeNumber != ERROR){
+	if (file_record != NULL){
 		for (int i = 0; i < 10; ++i){
 			if (FILES[i].record_info->TypeVal == TYPEVAL_REGULAR &&
 				FILES[i].record_info->inodeNumber == file_record->inodeNumber){
@@ -839,101 +855,121 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero)
 -----------------------------------------------------------------------------*/
 int mkdir2 (char *pathname){
 
-	if (init_all() != SUCCESS){
-		return ERROR;
-	}
+	// if (init_all() != SUCCESS){
+	// 	return ERROR;
+	// }
 
-	struct t2fs_inode *work_directory;
+	// struct t2fs_inode *work_directory = malloc(sizeof(struct t2fs_inode));
 
-	if (pathname[0] == '/'){
-		work_directory = ROOT_I_NODE;
-	}
+	// if (pathname[0] == '/'){
+	// 	if (get_i_node(0, work_directory) != SUCCESS){
+	// 		printf("ERROR: Erro ao carregar o diretório raiz.\n");
+	// 		return ERROR;
+	// 	}
+	// }
 
-	else {
-		work_directory = CURRENT_I_NODE;
-	}
+	// else {
+	// 	work_directory = CURRENT_I_NODE;
+	// }
 
-	if (verify_name(pathname, TYPEVAL_DIRETORIO, work_directory) == SUCCESS){
-		printf("ERROR: Diretório já existe.\n");
-		return ERROR;
-	}
+	// if (verify_name(pathname, TYPEVAL_DIRETORIO, work_directory) == SUCCESS){
+	// 	printf("ERROR: Diretório já existe.\n");
+	// 	return ERROR;
+	// }
 
-	int free_inode = get_first_free_bitmap(BITMAP_INODE);
+	// int free_inode = get_first_free_bitmap(BITMAP_INODE);
 
-	if (free_inode < 0){
-		printf("ERROR: Erro ao encontrar um espaço vazio no bitmap.\n");
-		return ERROR;
-	}
+	// if (free_inode < 0){
+	// 	printf("ERROR: Erro ao encontrar um espaço vazio no bitmap.\n");
+	// 	return ERROR;
+	// }
 
-	int i_node_block = ((SUPERBLOCK->superblockSize + SUPERBLOCK->freeBlocksBitmapSize + SUPERBLOCK->freeInodeBitmapSize)
-						+ ((int)(free_inode/32)));
+	// int i_node_block = ((SUPERBLOCK->superblockSize + SUPERBLOCK->freeBlocksBitmapSize + SUPERBLOCK->freeInodeBitmapSize)
+	// 					+ ((int)(free_inode/32)));
 
-	if(load_block(i_node_block) != SUCCESS){
-		printf("ERROR: Erro na leitura do bloco do inode livre.\n");
-		return ERROR;
-	}
+	// if(load_block(i_node_block) != SUCCESS){
+	// 	printf("ERROR: Erro na leitura do bloco do inode livre.\n");
+	// 	return ERROR;
+	// }
 
-	// setBitmap2(BITMAP_INODE, free_inode, 1);
+	// // setBitmap2(BITMAP_INODE, free_inode, 1);
 
-	struct t2fs_inode *new_inode = malloc(sizeof(struct t2fs_inode));
+	// struct t2fs_inode *new_inode = malloc(sizeof(struct t2fs_inode));
 
-	init_new_inode(new_inode);
+	// init_new_inode(new_inode);
 
-	// print_i_node(new_inode);
+	// // print_i_node(new_inode);
 
-	// printf("ue\n");
+	// // printf("ue\n");
 
-	char *filename = pathname;
-	char *temp = tail_dir(pathname);
+	// char *filename = pathname;
+	// char *temp = tail_dir(pathname);
 
-	// printf("%s, %d\n", temp, strlen(temp));
+	// // printf("%s, %d\n", temp, strlen(temp));
 
-	// printf("ue\n");
-	while(temp != NULL && strlen(temp) != 0){
-		filename = tail_dir(filename);
-		temp = tail_dir(temp);
-	}
+	// // printf("ue\n");
+	// while(temp != NULL && strlen(temp) != 0){
+	// 	filename = tail_dir(filename);
+	// 	temp = tail_dir(temp);
+	// }
 
-	// printf("ue\n");
-	filename = head_dir(filename); // nome do novo diretório
+	// // printf("ue\n");
+	// filename = head_dir(filename); // nome do novo diretório
 
-	char *father_path = malloc(sizeof(char) * strlen(pathname));
+	// char *father_path = malloc(sizeof(char) * strlen(pathname));
 
-	int father_size = strlen(pathname) - strlen(filename);
+	// int father_size = strlen(pathname) - strlen(filename);
 
-	if (pathname[strlen(pathname)-1] == '/'){
-		father_size -= 1;
-	}
+	// if (pathname[strlen(pathname)-1] == '/'){
+	// 	father_size -= 1;
+	// }
 
-	if (pathname[0] == '/'){
-		father_size -= 1;
-	}
+	// if (pathname[0] == '/'){
+	// 	father_size -= 1;
+	// }
 
-	// printf("FATHER SIZE: %d\n", father_size);
+	// // printf("FATHER SIZE: %d\n", father_size);
 
-	if (father_size > 0){
-		strncpy(father_path, pathname, father_size);
+	// struct t2fs_record *father_record = malloc(sizeof(struct t2fs_record));
 
-		struct t2fs_record *father_record = malloc(sizeof(struct t2fs_record));
+	// if (father_size > 0){
+	// 	strncpy(father_path, pathname, father_size);
 
-		father_record = find_directory(work_directory, father_path);
+	// 	father_record = find_directory(work_directory, father_path);
 
-		if (father_record == NULL){
-			printf("ERROR: Erro ao encontrar o diretório pai. \n");
-			return ERROR;
-		}
+	// 	if (father_record == NULL){
+	// 		printf("ERROR: Erro ao encontrar o diretório pai. \n");
+	// 		return ERROR;
+	// 	}
 
-		print_record(father_record);
+	// 	print_record(father_record);
 
-		get_i_node(father_record->inodeNumber, work_directory);
+	// 	// printf("eita\n");
+	// 	get_i_node(father_record->inodeNumber, work_directory);
 
-	}
+	// }
 
-	struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
-	get_i_node(free_inode, aux_inode);
+	// // struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
+	// // get_i_node(free_inode, new_inode);
 
-	// memcpy(&CURRENT_BLOCK[sizeof(struct t2fs_inode) * (father_record->inodeNumber % (1024/sizeof(struct t2fs_inode)))],
-	// 						&aux_inode, sizeof(struct t2fs_inode));
+	// char self[] = ".";
+	// // char father[] = "..";
+
+	// father_record = find_directory(work_directory, self);
+	// print_record(father_record);
+
+	// get_i_node(free_inode, new_inode);
+
+	// init_new_inode(new_inode);
+
+	// int current_block_index = sizeof(struct t2fs_inode) * (free_inode % (1024/sizeof(struct t2fs_inode)));
+
+	// memcpy(&CURRENT_BLOCK[current_block_index], new_inode, sizeof(struct t2fs_inode));
+
+	// write_block(3 + (int)(free_inode/(1024/sizeof(struct t2fs_inode))));
+
+	// printf("AFTER MEMCPY:\n");
+	// read_i_node_content(new_inode);
 
 	// descobrir numero do i-node do pai
 	// current_i_node deve ser o pai
@@ -1025,7 +1061,7 @@ int chdir2 (char *pathname){
 
 	file_record = find_directory(work_directory, pathname);
 
-	if (file_record->inodeNumber != ERROR){
+	if (file_record != NULL){
 
 		if (get_i_node(file_record->inodeNumber, work_inode) == SUCCESS){
 			// read_i_node_content(work_inode);
@@ -1119,11 +1155,20 @@ DIR2 opendir2 (char *pathname){
 		work_directory = CURRENT_I_NODE;
 	}
 
-	// printf("wooow\n");
-	file_record = find_directory(work_directory, pathname);
-	// printf("file_record->inodeNumber = %d\n", file_record->inodeNumber);
+	char root[] = "/";
 
-	if (file_record->inodeNumber != ERROR){
+	if(strcmp(root, pathname) == SUCCESS){
+
+		file_record->TypeVal = TYPEVAL_DIRETORIO;
+		file_record->inodeNumber = 0;
+		strcpy(file_record->name, root);
+	}
+
+	else {
+		file_record = find_directory(work_directory, pathname);
+	}
+
+	if (file_record != NULL){
 		for (int i = 0; i < 10; ++i){
 			if (DIRECTORIES[i].record_info->TypeVal == TYPEVAL_DIRETORIO &&
 				DIRECTORIES[i].record_info->inodeNumber == file_record->inodeNumber){
@@ -1139,6 +1184,7 @@ DIR2 opendir2 (char *pathname){
 
 		if (handle >= 0){
 			DIRECTORIES[handle].record_info = file_record;
+			get_i_node(DIRECTORIES[handle].record_info->inodeNumber, CURRENT_I_NODE);
 			return handle;
 		}
 
@@ -1178,6 +1224,60 @@ int readdir2 (DIR2 handle, DIRENT2 *dentry){
 		return ERROR;
 	}
 
+	if (get_i_node(DIRECTORIES[handle].record_info->inodeNumber, CURRENT_I_NODE) == SUCCESS){
+
+		struct t2fs_record *aux_record;
+		aux_record = (struct t2fs_record *) malloc(sizeof(struct t2fs_record));
+
+		if(CURRENT_I_NODE->blocksFileSize > 0){
+			if (load_block(CURRENT_I_NODE->dataPtr[0]) == SUCCESS){
+				int i = DIRECTORIES[handle].seek_pointer;
+				if (i < 16) {
+					memcpy(aux_record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
+					if(aux_record->TypeVal == TYPEVAL_REGULAR || aux_record->TypeVal == TYPEVAL_DIRETORIO){
+						struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
+						if (get_i_node(aux_record->inodeNumber, aux_inode) == SUCCESS){
+							strcpy(dentry->name, aux_record->name);
+							dentry->fileType = aux_record->TypeVal;
+							dentry->fileSize = aux_inode->bytesFileSize;
+						}
+						DIRECTORIES[handle].seek_pointer++;
+						return SUCCESS;
+					}
+					
+					else {
+						return ERROR;
+					}
+				}
+			}
+		}
+
+		if(CURRENT_I_NODE->blocksFileSize > 1){
+			if (load_block(CURRENT_I_NODE->dataPtr[1]) == SUCCESS){
+				int i = DIRECTORIES[handle].seek_pointer;
+				if (i < 32) {
+					memcpy(aux_record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
+					if(aux_record->TypeVal == TYPEVAL_REGULAR || aux_record->TypeVal == TYPEVAL_DIRETORIO){
+						struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
+						if (get_i_node(aux_record->inodeNumber, aux_inode) == SUCCESS){
+							strcpy(dentry->name, aux_record->name);
+							dentry->fileType = aux_record->TypeVal;
+							dentry->fileSize = aux_inode->bytesFileSize;
+						}
+						DIRECTORIES[handle].seek_pointer++;
+						return SUCCESS;
+					}
+					else {
+						return ERROR;
+					}
+				}
+			}
+		}
+
+		return ERROR;
+	}
+
+	printf("ERROR: Erro na leitura do inode do diretório.\n");
 	return ERROR;
 }
 
