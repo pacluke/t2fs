@@ -204,10 +204,10 @@ int get_i_node(int i_node_n, struct t2fs_inode *i_node){
 void print_i_node(struct t2fs_inode *i_node){
 	printf("BLOCKS FILE SIZE\t %u\n", i_node->blocksFileSize);
 	printf("BYTES FILE SIZE:\t %u\n", i_node->bytesFileSize);
-	printf("1ST DATA POINTER:\t %u\n", i_node->dataPtr[0]);
-	printf("2ND DATA POINTER:\t %u\n", i_node->dataPtr[1]);
-	printf("SINGLE INDIRECT POINTER: %u\n", i_node->singleIndPtr);
-	printf("DOUBLE INDIRECT POINTER: %u\n", i_node->doubleIndPtr);
+	printf("1ST DATA POINTER:\t %hu\n", i_node->dataPtr[0]);
+	printf("2ND DATA POINTER:\t %hu\n", i_node->dataPtr[1]);
+	printf("SINGLE INDIRECT POINTER: %hu\n", i_node->singleIndPtr);
+	printf("DOUBLE INDIRECT POINTER: %hu\n", i_node->doubleIndPtr);
 	printf("\n");
 }
 

@@ -533,11 +533,14 @@ void debug_main(){
 	printf("[>>>>>>>MKDIR2<<<<<<<<]\n");
 	printf("\n\n\n");
 
-	char eita_giovana[] = "churrrros/churrascao";
-	char eita_cuzaum[] = "/dir2";
+	// if (get_i_node(0, CURRENT_I_NODE) == SUCCESS)
+	// 	printf("[get_i_node] I-node de trabalho é o i-node 0.\n\n");
+
+	char eita_giovana[] = "/dir2/churrascao";
+	// char eita_cuzaum[] = "/dir2";
 
 	mkdir2(eita_giovana);
-	mkdir2(eita_cuzaum);
+	// mkdir2(eita_cuzaum);
 
 
 }
@@ -870,27 +873,81 @@ int mkdir2 (char *pathname){
 		return ERROR;
 	}
 
-	// escreve no bloco	
-	// seta bitmap novo dos brother
+	// setBitmap2(BITMAP_INODE, free_inode, 1);
+
+	struct t2fs_inode *new_inode = malloc(sizeof(struct t2fs_inode));
+
+	init_new_inode(new_inode);
+
+	// print_i_node(new_inode);
+
+	// printf("ue\n");
 
 	char *filename = pathname;
 	char *temp = tail_dir(pathname);
 
-	while(temp != NULL){
+	// printf("%s, %d\n", temp, strlen(temp));
+
+	// printf("ue\n");
+	while(temp != NULL && strlen(temp) != 0){
 		filename = tail_dir(filename);
 		temp = tail_dir(temp);
 	}
 
+	// printf("ue\n");
 	filename = head_dir(filename); // nome do novo diretório
+
+	char *father_path = malloc(sizeof(char) * strlen(pathname));
+
+	int father_size = strlen(pathname) - strlen(filename);
+
+	if (pathname[strlen(pathname)-1] == '/'){
+		father_size -= 1;
+	}
+
+	if (pathname[0] == '/'){
+		father_size -= 1;
+	}
+
+	// printf("FATHER SIZE: %d\n", father_size);
+
+	if (father_size > 0){
+		strncpy(father_path, pathname, father_size);
+
+		struct t2fs_record *father_record = malloc(sizeof(struct t2fs_record));
+
+		father_record = find_directory(work_directory, father_path);
+
+		if (father_record == NULL){
+			printf("ERROR: Erro ao encontrar o diretório pai. \n");
+			return ERROR;
+		}
+
+		print_record(father_record);
+
+		get_i_node(father_record->inodeNumber, work_directory);
+
+	}
+
+	struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
+	get_i_node(free_inode, aux_inode);
+
+	// memcpy(&CURRENT_BLOCK[sizeof(struct t2fs_inode) * (father_record->inodeNumber % (1024/sizeof(struct t2fs_inode)))],
+	// 						&aux_inode, sizeof(struct t2fs_inode));
 
 	// descobrir numero do i-node do pai
 	// current_i_node deve ser o pai
 	// no current tem que add info sobre o novo diretório
+
+	//*******************************************
 	// no filho tem que add self (.) e pai (..)
+	//*******************************************
 
 
+	// printf("%s %d\n", filename, free_inode);
+	// printf("FATHER PATH: %s, FULL PATH: %s\n", father_path, pathname);
 
-	printf("%s %d\n", filename, free_inode);
+
 
 	// printf("HEAD: %s, TAIL: %s\n", head_dir(pathname), tail_dir(pathname));
 
