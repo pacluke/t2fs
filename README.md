@@ -25,7 +25,7 @@ Situação atual:
 | `int delete2 (char *filename)`							| *---*				| *---* 					|
 | `FILE2 open2 (char *filename)`							| *SIM*				| *SIM* 					|
 | `int close2 (FILE2 handle)` 								| *SIM*				| *SIM* 					|
-| `int read2 (FILE2 handle, char *buffer, int size)`		| *---*				| *---* 					|
+| `int read2 (FILE2 handle, char *buffer, int size)`		| *SIM*				| *SIM* 					|
 | `int write2 (FILE2 handle, char *buffer, int size)`		| *---*				| *---* 					|
 | `int truncate2 (FILE2 handle)`							| *---*				| *---* 					|
 | `int seek2 (FILE2 handle, unsigned int offset)`			| *SIM*				| *SIM* 					|
