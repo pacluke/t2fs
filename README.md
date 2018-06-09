@@ -34,6 +34,6 @@ Situação atual:
 | `int chdir2(char *pathname)`								| *SIM*				| *SIM* 					|
 | `int getcwd2 (char *pathname, int size)`					| *SIM*				| *SIM* 					|
 | `DIR2 opendir2 (char *pathname)`							| *SIM*				| *SIM* 					|
-| `int readdir2 (DIR2 handle, DIRENT2 *dentry)`				| *---*				| *---* 					|
+| `int readdir2 (DIR2 handle, DIRENT2 *dentry)`				| *SIM*				| *SIM* 					|
 | `int closedir2 (DIR2 handle) `							| *SIM*				| *SIM* 					|
 
