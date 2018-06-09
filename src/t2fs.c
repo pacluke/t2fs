@@ -748,13 +748,69 @@ int read2 (FILE2 handle, char *buffer, int size){
 		return ERROR;
 	}
 
-	struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
+	struct t2fs_record *current_i_node_cpy = malloc(sizeof(struct t2fs_record));
+	char father [] = "..";
+	current_i_node_cpy = find_directory(CURRENT_I_NODE, father);
 
+
+	struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
 	if (get_i_node(FILES[handle].record_info->inodeNumber, aux_inode) == SUCCESS){
 
+		if (aux_inode->bytesFileSize == 0){
+			get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
+			return SUCCESS;
+		}
 
+		int b_ctr = 0; // controle do buffer
+		int f_ctr = 0; // controle dos bytes do arquivo
+
+		if (aux_inode->dataPtr[0] != INVALID_PTR){
+
+			if(b_ctr < 1024){
+				f_ctr = FILES[handle].seek_pointer % 1024;
+			}
+
+			if ((b_ctr < (aux_inode->bytesFileSize - FILES[handle].seek_pointer)) && (b_ctr < size)){
+				if (load_block(aux_inode->dataPtr[0]) == SUCCESS){
+					while((b_ctr < size) &&
+						(b_ctr < (aux_inode->bytesFileSize - FILES[handle].seek_pointer)) &&
+						(f_ctr < 1024)){
+
+						buffer[b_ctr] = CURRENT_BLOCK[f_ctr];
+
+						b_ctr++;
+						f_ctr++;
+					}
+				}
+			}
+			
+		}
+
+		if (aux_inode->dataPtr[1] != INVALID_PTR){
+			if(b_ctr < 1024){
+				f_ctr = FILES[handle].seek_pointer % 1024;
+			}
+
+			if ((b_ctr < (aux_inode->bytesFileSize - FILES[handle].seek_pointer)) && (b_ctr < size)){
+				if (load_block(aux_inode->dataPtr[1]) == SUCCESS){
+					while((b_ctr < size) &&
+						(b_ctr < (aux_inode->bytesFileSize - FILES[handle].seek_pointer)) &&
+						(f_ctr < 1024)){
+
+						buffer[b_ctr] = CURRENT_BLOCK[f_ctr];
+					
+						b_ctr++;
+						f_ctr++;
+					}
+				}
+			}			
+		}
+
+		get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
+		return b_ctr;
 	}
 
+	get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
 	return ERROR;
 }
 
@@ -1262,9 +1318,9 @@ int readdir2 (DIR2 handle, DIRENT2 *dentry){
 
 	// printf(" INODE::::::..... %d\n", current_i_node_cpy->inodeNumber);
 
-	char self [] = "..";
+	char father [] = "..";
 
-	current_i_node_cpy = find_directory(CURRENT_I_NODE, self);
+	current_i_node_cpy = find_directory(CURRENT_I_NODE, father);
 
 	// printf("INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
 
@@ -1337,6 +1393,7 @@ int readdir2 (DIR2 handle, DIRENT2 *dentry){
 		return ERROR;
 	}
 
+	get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
 	printf("ERROR: Erro na leitura do inode do diretório.\n");
 	return ERROR;
 }
