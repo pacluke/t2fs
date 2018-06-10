@@ -22,7 +22,7 @@ Situação atual:
 | --------------------------------------------------------- |:-----------------:|:-------------------------:|
 | `int identify2 (char *name,int size)`						| *SIM*				| *SIM* 					|
 | `FILE2 create2 (char *filename)`							| *---*				| *---* 					|
-| `int delete2 (char *filename)`							| *---*				| *---* 					|
+| `int delete2 (char *filename)`							| *SIM*				| *SIM* 					|
 | `FILE2 open2 (char *filename)`							| *SIM*				| *SIM* 					|
 | `int close2 (FILE2 handle)` 								| *SIM*				| *SIM* 					|
 | `int read2 (FILE2 handle, char *buffer, int size)`		| *SIM*				| *SIM* 					|
