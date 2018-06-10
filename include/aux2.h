@@ -289,9 +289,3 @@ int remove_file(struct t2fs_inode *dir_inode, char* filename);
 	filename de um diretório.
 *************************************/
 int remove_directory(struct t2fs_inode *dir_inode, char* dir_name);
-
-
-
-
-
-
