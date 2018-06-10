@@ -628,8 +628,18 @@ int delete2 (char *filename){
 		return ERROR;
 	}
 
+
+	struct t2fs_inode *work_directory = malloc(sizeof(struct t2fs_inode));
+	
+	if (filename[0] == '/'){
+		work_directory = ROOT_I_NODE;
+	}
+	else {
+		work_directory = CURRENT_I_NODE;
+	}
+
 	struct t2fs_record *aux_record = malloc(sizeof(struct t2fs_record));
-	aux_record = find_file(CURRENT_I_NODE, filename);
+	aux_record = find_file(work_directory, filename);
 
 	if (aux_record != NULL){
 		int i = 0;
@@ -642,7 +652,7 @@ int delete2 (char *filename){
 
 		struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
 		if (get_i_node(aux_record->inodeNumber, aux_inode) == SUCCESS){
-			if(remove_file(CURRENT_I_NODE, filename) == SUCCESS){
+			if(remove_file(work_directory, filename) == SUCCESS){
 
 				if (aux_inode->dataPtr[0] != INVALID_PTR){
 					if (setBitmap2(BITMAP_DADOS, aux_inode->dataPtr[0], 0) == SUCCESS){
@@ -674,7 +684,7 @@ int delete2 (char *filename){
 		printf("ERROR: Não foi possível excluir o record associado ao arquivo.\n");
 		return ERROR;
 		}
-		
+
 	printf("ERROR: Arquivo não encontrado.\n");
 	return ERROR;
 }
@@ -1131,6 +1141,71 @@ int rmdir2 (char *pathname){
 		return ERROR;
 	}
 
+	char root[] = "/";
+
+	if (strcmp(root, pathname) == SUCCESS){
+		printf("ERROR: Você não pode remover o diretório raiz.\n");
+		return ERROR;
+	}
+
+	struct t2fs_inode *work_directory = malloc(sizeof(struct t2fs_inode));
+
+	if (pathname[0] == '/'){
+		work_directory = ROOT_I_NODE;
+	}
+	else {
+		work_directory = CURRENT_I_NODE;
+	}
+
+	struct t2fs_record *aux_record = malloc(sizeof(struct t2fs_record));
+	aux_record = find_directory(work_directory, pathname);
+
+	if (aux_record != NULL){
+
+		int i = 0;
+		for (i = 0; i < 10; ++i){
+			if (DIRECTORIES[i].record_info->inodeNumber == aux_record->inodeNumber){
+				printf("ERROR: Diretório está aberto.\n");
+				return ERROR;
+			}
+		}
+
+		struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
+		if (get_i_node(aux_record->inodeNumber, aux_inode) == SUCCESS){
+			if(remove_directory(work_directory, pathname) == SUCCESS){
+
+				if (aux_inode->dataPtr[0] != INVALID_PTR){
+					if (setBitmap2(BITMAP_DADOS, aux_inode->dataPtr[0], 0) == SUCCESS){
+						aux_inode->dataPtr[0] = INVALID_PTR;
+					}
+				}
+
+				if (aux_inode->dataPtr[1] != INVALID_PTR){
+					if(setBitmap2(BITMAP_DADOS, aux_inode->dataPtr[1], 0) == SUCCESS){
+						aux_inode->dataPtr[1] = INVALID_PTR;
+					}
+				}
+
+				if (aux_inode->singleIndPtr != INVALID_PTR){
+					if(setBitmap2(BITMAP_DADOS, aux_inode->singleIndPtr, 0) == SUCCESS){
+						aux_inode->singleIndPtr = INVALID_PTR;
+					}
+				}
+
+				if(setBitmap2 (BITMAP_INODE, aux_record->inodeNumber, 0) == SUCCESS){
+					return SUCCESS;
+				}
+			}
+
+			printf("ERROR: Erro ao ler o i-node relacionado ao diretório.\n");
+			return ERROR;
+
+		}
+		printf("ERROR: Não foi possível excluir o record associado ao diretório.\n");
+		return ERROR;
+		}
+
+	printf("ERROR: Diretório não encontrado.\n");
 	return ERROR;
 }
 
