@@ -278,5 +278,11 @@ int init_empty_inode_block(int block);
 *************************************/
 int make_entry(char *filename, struct t2fs_record *father_record, BYTE dir_or_file, int new_inode_number);
 
+/*************************************
+	Remove um record de nome filename
+	de um diretório.
+*************************************/
+int remove_file(struct t2fs_inode *dir_inode, char* filename);
+
 
 

@@ -832,7 +832,74 @@ int make_entry(char *filename, struct t2fs_record *father_record, BYTE dir_or_fi
 }
 
 
+int remove_file(struct t2fs_inode *dir_inode, char* filename){
 
+	struct t2fs_record *file;
+	char *name = head_dir(filename);
+
+	// printf("\n\n\n\n\n\n\n");
+	// printf("%s\n", name);
+	// read_i_node_content(dir_inode);
+
+	file = (struct t2fs_record *) malloc(sizeof(struct t2fs_record));
+
+	if(dir_inode->blocksFileSize > 0){
+		if (load_block(dir_inode->dataPtr[0]) == SUCCESS){
+			int i = 0;
+			for (i = 0; i < MAX_RECORDS; ++i){
+				memcpy(file, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
+				if(file->TypeVal == TYPEVAL_REGULAR && ((strcmp(name, file->name) == SUCCESS))){
+					file->TypeVal = TYPEVAL_INVALIDO;
+					memcpy(&CURRENT_BLOCK[i*64], file ,sizeof(struct t2fs_record));
+					if (write_block(dir_inode->dataPtr[0]) == SUCCESS){
+						return SUCCESS;
+					}
+				}
+				else if (file->TypeVal == TYPEVAL_DIRETORIO && (strcmp(name, file->name) == SUCCESS)){
+					char *tail = tail_dir(filename);
+					if (tail != NULL){
+						struct t2fs_inode *next_inode;
+						next_inode = (struct t2fs_inode *) malloc(sizeof(struct t2fs_inode));
+						if (get_i_node(file->inodeNumber, next_inode) == SUCCESS){
+							return remove_file(next_inode, tail_dir(filename));
+						}
+					}
+				}
+			}
+		}
+		else {
+			return ERROR;
+		}
+	}
+	if(dir_inode->blocksFileSize > 1){
+		if (load_block(dir_inode->dataPtr[1]) == SUCCESS){
+			int i = 0;
+			for (i = 0; i < MAX_RECORDS; ++i){
+				memcpy(file, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
+				if(file->TypeVal == TYPEVAL_REGULAR && ((strcmp(name, file->name) == SUCCESS))){
+					file->TypeVal = TYPEVAL_INVALIDO;
+					memcpy(&CURRENT_BLOCK[i*64], file, sizeof(struct t2fs_record));
+					return SUCCESS;
+				}
+				else if (file->TypeVal == TYPEVAL_DIRETORIO && (strcmp(name, file->name) == SUCCESS)){
+					char *tail = tail_dir(filename);
+					if (tail != NULL){
+						struct t2fs_inode *next_inode;
+						next_inode = (struct t2fs_inode *) malloc(sizeof(struct t2fs_inode));
+						if (get_i_node(file->inodeNumber, next_inode) == SUCCESS){
+							return remove_file(next_inode, tail_dir(filename));
+						}
+					}
+				}
+			}
+		}
+		else {
+			return ERROR;
+		}
+	}
+
+	return ERROR;
+}
 
 
 

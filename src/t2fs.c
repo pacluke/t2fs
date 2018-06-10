@@ -628,6 +628,54 @@ int delete2 (char *filename){
 		return ERROR;
 	}
 
+	struct t2fs_record *aux_record = malloc(sizeof(struct t2fs_record));
+	aux_record = find_file(CURRENT_I_NODE, filename);
+
+	if (aux_record != NULL){
+		int i = 0;
+		for (i = 0; i < 10; ++i){
+			if (FILES[i].record_info->inodeNumber == aux_record->inodeNumber){
+				printf("ERROR: Arquivo está aberto.\n");
+				return ERROR;
+			}
+		}
+
+		struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
+		if (get_i_node(aux_record->inodeNumber, aux_inode) == SUCCESS){
+			if(remove_file(CURRENT_I_NODE, filename) == SUCCESS){
+
+				if (aux_inode->dataPtr[0] != INVALID_PTR){
+					if (setBitmap2(BITMAP_DADOS, aux_inode->dataPtr[0], 0) == SUCCESS){
+						aux_inode->dataPtr[0] = INVALID_PTR;
+					}
+				}
+
+				if (aux_inode->dataPtr[1] != INVALID_PTR){
+					if(setBitmap2(BITMAP_DADOS, aux_inode->dataPtr[1], 0) == SUCCESS){
+						aux_inode->dataPtr[1] = INVALID_PTR;
+					}
+				}
+
+				if (aux_inode->singleIndPtr != INVALID_PTR){
+					if(setBitmap2(BITMAP_DADOS, aux_inode->singleIndPtr, 0) == SUCCESS){
+						aux_inode->singleIndPtr = INVALID_PTR;
+					}
+				}
+
+				if(setBitmap2 (BITMAP_INODE, aux_record->inodeNumber, 0) == SUCCESS){
+					return SUCCESS;
+				}
+			}
+
+			printf("ERROR: Erro ao ler o i-node relacionado ao arquivo.\n");
+			return ERROR;
+
+		}
+		printf("ERROR: Não foi possível excluir o record associado ao arquivo.\n");
+		return ERROR;
+		}
+		
+	printf("ERROR: Arquivo não encontrado.\n");
 	return ERROR;
 }
 
@@ -1336,56 +1384,54 @@ int readdir2 (DIR2 handle, DIRENT2 *dentry){
 
 		if(aux_inode->blocksFileSize > 0){
 			if (load_block(aux_inode->dataPtr[0]) == SUCCESS){
-				int i = DIRECTORIES[handle].seek_pointer;
-				if (i < 16) {
-					memcpy(aux_record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
-					if(aux_record->TypeVal == TYPEVAL_REGULAR || aux_record->TypeVal == TYPEVAL_DIRETORIO){
-						struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
-						if (get_i_node(aux_record->inodeNumber, aux_inode) == SUCCESS){
-							strcpy(dentry->name, aux_record->name);
-							dentry->fileType = aux_record->TypeVal;
-							dentry->fileSize = aux_inode->bytesFileSize;
+				if (DIRECTORIES[handle].seek_pointer < 16) {
+					while(DIRECTORIES[handle].seek_pointer < 16){
+						memcpy(aux_record, &CURRENT_BLOCK[(DIRECTORIES[handle].seek_pointer)*64], sizeof(struct t2fs_record));
+						if(aux_record->TypeVal == TYPEVAL_REGULAR || aux_record->TypeVal == TYPEVAL_DIRETORIO){
+							struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
+							if (get_i_node(aux_record->inodeNumber, aux_inode) == SUCCESS){
+								strcpy(dentry->name, aux_record->name);
+								dentry->fileType = aux_record->TypeVal;
+								dentry->fileSize = aux_inode->bytesFileSize;
+							}
+							DIRECTORIES[handle].seek_pointer++;
+
+							get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
+							// printf("INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
+							return SUCCESS;
 						}
 						DIRECTORIES[handle].seek_pointer++;
-
-						get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
-						// printf("INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
-						return SUCCESS;
 					}
-
-					else {
-						get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
-						// printf("INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
-						return ERROR;
-					}
+					get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
+					// printf("INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
+					return ERROR;
 				}
 			}
 		}
 
 		if(aux_inode->blocksFileSize > 1){
 			if (load_block(aux_inode->dataPtr[1]) == SUCCESS){
-				int i = DIRECTORIES[handle].seek_pointer;
-				if (i < 32) {
-					memcpy(aux_record, &CURRENT_BLOCK[i*64], sizeof(struct t2fs_record));
-					if(aux_record->TypeVal == TYPEVAL_REGULAR || aux_record->TypeVal == TYPEVAL_DIRETORIO){
-						struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
-						if (get_i_node(aux_record->inodeNumber, aux_inode) == SUCCESS){
-							strcpy(dentry->name, aux_record->name);
-							dentry->fileType = aux_record->TypeVal;
-							dentry->fileSize = aux_inode->bytesFileSize;
+				if (DIRECTORIES[handle].seek_pointer < 16) {
+					while(DIRECTORIES[handle].seek_pointer < 16){
+						memcpy(aux_record, &CURRENT_BLOCK[(DIRECTORIES[handle].seek_pointer)*64], sizeof(struct t2fs_record));
+						if(aux_record->TypeVal == TYPEVAL_REGULAR || aux_record->TypeVal == TYPEVAL_DIRETORIO){
+							struct t2fs_inode *aux_inode = malloc(sizeof(struct t2fs_inode));
+							if (get_i_node(aux_record->inodeNumber, aux_inode) == SUCCESS){
+								strcpy(dentry->name, aux_record->name);
+								dentry->fileType = aux_record->TypeVal;
+								dentry->fileSize = aux_inode->bytesFileSize;
+							}
+							DIRECTORIES[handle].seek_pointer++;
+
+							get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
+							// printf("INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
+							return SUCCESS;
 						}
 						DIRECTORIES[handle].seek_pointer++;
-
-						get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
-						// printf("INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
-						return SUCCESS;
 					}
-					else {
-
-						get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
-						// printf("INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
-						return ERROR;
-					}
+					get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
+					// printf("INODE NUM: %d\n", current_i_node_cpy->inodeNumber);
+					return ERROR;
 				}
 			}
 		}
