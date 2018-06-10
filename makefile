@@ -34,7 +34,7 @@ clean:
 	@cp bin/bitmap2.o lib/
 	@rm -rf bin/*
 
-all_tests:
+non_destructive_tests:
 	@echo ">>> testes <<< \n"
 	@echo "*** identify2 *** \n"
 	@gcc -g teste/identify2_test.c -I include -L lib -lt2fs -o bin/identify2_test -Wall
@@ -48,16 +48,20 @@ all_tests:
 	@echo "\n*** opendir2, readdir2, e closedir2 *** \n"
 	@gcc -g teste/handling_directories.c -I include -L lib -lt2fs -o bin/handling_directories -Wall
 	@./bin/handling_directories
+
+destructive_tests:
 	@echo "\n*** opendir2, readdir2, closedir2 e rmdir2 *** \n"
 	@gcc -g teste/delete_directories_test.c -I include -L lib -lt2fs -o bin/delete_directories_test -Wall
 	@./bin/delete_directories_test
 	@echo "\n*** opendir2, readdir2, closedir2 e delete2 *** \n"
 	@gcc -g teste/delete_files_test.c -I include -L lib -lt2fs -o bin/delete_files_test -Wall
-	@./bin/delete_files_test	
+	@./bin/delete_files_test
+
+shell:
 	@echo "\n*** shell dado pelo professor *** \n"
 	@gcc -g exemplo/main.c -I include -L lib -lt2fs -o bin/test_main -Wall
 	@./bin/test_main
 
 
-test: compile library all_tests
+test: compile library non_destructive_tests destructive_tests shell
 
