@@ -864,7 +864,9 @@ int read2 (FILE2 handle, char *buffer, int size){
 				}
 			}			
 		}
-		buffer[b_ctr+1] = '\0';
+		if (!(b_ctr < size)){
+			buffer[b_ctr] = '\0';
+		}
 		get_i_node(current_i_node_cpy->inodeNumber, CURRENT_I_NODE);
 		return b_ctr;
 	}
