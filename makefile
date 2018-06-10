@@ -34,23 +34,30 @@ clean:
 	@cp bin/bitmap2.o lib/
 	@rm -rf bin/*
 
-test_main:
+all_tests:
 	@echo ">>> testes <<< \n"
 	@echo "*** identify2 *** \n"
-	@gcc -g exemplo/identify2_test.c -I include -L lib -lt2fs -o bin/identify2_test -Wall
+	@gcc -g teste/identify2_test.c -I include -L lib -lt2fs -o bin/identify2_test -Wall
 	@./bin/identify2_test
 	@echo "\n*** chdir2 e getcwd2 *** \n"
-	@gcc -g exemplo/chdir2_getcwd2_test.c -I include -L lib -lt2fs -o bin/chdir2_getcwd2_test -Wall
+	@gcc -g teste/chdir2_getcwd2_test.c -I include -L lib -lt2fs -o bin/chdir2_getcwd2_test -Wall
 	@./bin/chdir2_getcwd2_test
 	@echo "\n*** open2, read2, seek2 e close2 *** \n"
-	@gcc -g exemplo/handling_files_test.c -I include -L lib -lt2fs -o bin/handling_files_test -Wall
+	@gcc -g teste/handling_files_test.c -I include -L lib -lt2fs -o bin/handling_files_test -Wall
 	@./bin/handling_files_test
+	@echo "\n*** opendir2, readdir2, e closedir2 *** \n"
+	@gcc -g teste/handling_directories.c -I include -L lib -lt2fs -o bin/handling_directories -Wall
+	@./bin/handling_directories
+	@echo "\n*** opendir2, readdir2, closedir2 e rmdir2 *** \n"
+	@gcc -g teste/delete_directories_test.c -I include -L lib -lt2fs -o bin/delete_directories_test -Wall
+	@./bin/delete_directories_test
+	@echo "\n*** opendir2, readdir2, closedir2 e delete2 *** \n"
+	@gcc -g teste/delete_files_test.c -I include -L lib -lt2fs -o bin/delete_files_test -Wall
+	@./bin/delete_files_test	
+	@echo "\n*** shell dado pelo professor *** \n"
 	@gcc -g exemplo/main.c -I include -L lib -lt2fs -o bin/test_main -Wall
 	@./bin/test_main
 
-# com_test:
-# 	gcc -g testes/teste.c -I include -L lib -lt2f2 -o testes/teste
-# 	./testes/teste
 
-test: compile library test_main
+test: compile library all_tests
 
