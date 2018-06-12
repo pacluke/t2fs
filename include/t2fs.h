@@ -308,10 +308,4 @@ Saída:	Se a operação foi realizada com sucesso, a função retorna "0" (zero).
 -----------------------------------------------------------------------------*/
 int closedir2 (DIR2 handle);
 
-
-/*
-	função usada pra testar as funções criadas (auxiliares)
-*/
-void debug_main();
-
 #endif
